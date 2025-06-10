@@ -6,7 +6,7 @@ export function transformData(obj, keyName = "hierarchy") {
   if (!Array.isArray(entries[0][1])) {
     // returning { name: "object key", value: "object value" },
     // the strcture of data to be compatible with d3.hierarchy()
-    return { name: entries[0][1], value: entries[0][1] };
+    return { name: entries[0][0], value: entries[0][1] };
   }
 
   const name = entries[0][0]; // object key from entries [key, value]
