@@ -13,20 +13,17 @@ export function TreeView() {
             Aug: 46.4,
           },
           {
-            Sep: 42.7,
-          },
-        ],
-      },
-      {
-        Q4: [
-          {
-            Oct: 115.5,
-          },
-          {
-            Nov: 24.8,
-          },
-          {
-            Dec: 97.2,
+            Sep: [
+              {
+                Oct: 115.5,
+              },
+              {
+                Nov: 24.8,
+              },
+              {
+                Dec: 97.2,
+              },
+            ],
           },
         ],
       },
@@ -50,6 +47,7 @@ export function TreeView() {
   function transformData(obj, keyName = "hierarchy") {
     // for object we get entries [key, value]
     const entries = Object.entries(obj);
+    console.log("entries", entries);
 
     if (!Array.isArray(entries[0][1])) {
       // check if object value is an array object
@@ -57,23 +55,27 @@ export function TreeView() {
 
       // returning { name: "object key", value: "object value" },
       // the strcture of data to be compatible with d3.hierarchy()
-      return { name: keyValue[0][0], value: keyValue[0][1] };
+      return { name: entries[0][1], value: entries[0][1] };
     }
 
     const name = entries[0][0]; // object key from entries [key, value]
     const children = entries[0][1].map((child) => {
+      // --- TODO---
+      console.log("child", child);
       // set children value as an array, with recursive logic for arbitrary depth
       const childEntries = Object.entries(child);
+      //console.log("childEntries", childEntries);
 
       if (Array.isArray(childEntries[0][1])) {
         return {
           name: childEntries[0][0],
-          children: [
-            childEntries[0][1].map(() => transformData(childEntries[0][1])),
-          ],
+          children: childEntries[0][1].map((i) => transformData(i)),
         };
       }
-      return null;
+      return {
+        name: childEntries[0][0],
+        children: childEntries[0][1],
+      };
     });
 
     // returning the strcture of data to be compatible with d3.hierarchy()
