@@ -22,7 +22,7 @@ export function transformData(obj, keyName = "hierarchy") {
     }
     return {
       name: childEntries[0][0],
-      children: childEntries[0][1],
+      value: childEntries[0][1],
     };
   });
 
