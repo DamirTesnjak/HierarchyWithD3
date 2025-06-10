@@ -21,7 +21,27 @@ export function TreeView() {
                 Nov: 24.8,
               },
               {
-                Dec: 97.2,
+                Dec: [
+                  {
+                    Oct: 115.5,
+                  },
+                  {
+                    Nov: [
+                      {
+                        Oct: 115.5,
+                      },
+                      {
+                        Nov: 24.8,
+                      },
+                      {
+                        Dec: 97.2,
+                      },
+                    ],
+                  },
+                  {
+                    Dec: 97.2,
+                  },
+                ],
               },
             ],
           },
@@ -40,19 +60,15 @@ export function TreeView() {
 
     // Example: draw a hierarchical structure
     const tranformedData = transformData(data);
-    console.log("transformedData", tranformedData);
     drawHierarchicalStructure(tranformedData, svg);
   }, [data]);
 
   function transformData(obj, keyName = "hierarchy") {
     // for object we get entries [key, value]
     const entries = Object.entries(obj);
-    console.log("entries", entries);
 
+    // check if object value is NOT array object
     if (!Array.isArray(entries[0][1])) {
-      // check if object value is an array object
-      const keyValue = Object.entries(entries[0][1]); // object value
-
       // returning { name: "object key", value: "object value" },
       // the strcture of data to be compatible with d3.hierarchy()
       return { name: entries[0][1], value: entries[0][1] };
@@ -60,11 +76,8 @@ export function TreeView() {
 
     const name = entries[0][0]; // object key from entries [key, value]
     const children = entries[0][1].map((child) => {
-      // --- TODO---
-      console.log("child", child);
       // set children value as an array, with recursive logic for arbitrary depth
       const childEntries = Object.entries(child);
-      //console.log("childEntries", childEntries);
 
       if (Array.isArray(childEntries[0][1])) {
         return {
