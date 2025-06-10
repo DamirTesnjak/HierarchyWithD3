@@ -1,5 +1,5 @@
 import "./App.css";
-import { TreeView } from "./components/treeView/treeView";
+import { TreeView } from "./components/TreeView/TreeView";
 
 function App() {
   return (

@@ -1,6 +1,7 @@
 import { hierarchy, select } from "d3";
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { transformData } from "../../utils/transformData";
+import Toolbar from "../Toolbar";
 
 export function TreeView() {
   const data = {
@@ -27,35 +28,39 @@ export function TreeView() {
             Nov: 24.8,
           },
           {
-            Dec: 97.2,
+            Dec: [
+              {
+                Oct: 115.5,
+              },
+              {
+                Nov: 24.8,
+              },
+              {
+                Dec: 97.2,
+              },
+            ],
           },
         ],
       },
     ],
   };
 
-  const svgRef = useRef();
+  const [action, setAction] = useState({
+    skip: false,
+    invert: false,
+  });
 
-  useEffect(() => {
-    const svg = select(svgRef.current);
-
-    // Clear previous drawing
-    svg.selectAll("*").remove();
-
-    // Example: draw a hierarchical structure
-    const tranformedData = transformData(data);
-    drawHierarchicalStructure(tranformedData, svg);
-  }, [data]);
-
-  function drawHierarchicalStructure(data, svg) {
+  const drawHierarchicalStructure = useCallback((data, svg) => {
     const nodeSize = 20;
     const root = hierarchy(data).eachBefore(
       // for each node and decendandt in pre-order traversal we add am index value,
       // starting with the 0
-      (
-        (i) => (d) =>
-          (d.index = i++)
-      )(0)
+      ((i) => (d) => {
+        d.index = i++;
+        d.skip = false;
+        d.invert = false;
+        d.collapsed = false;
+      })(0)
     );
     const nodes = root.descendants();
 
@@ -85,18 +90,31 @@ export function TreeView() {
       .attr("r", 2.5)
       .attr("fill", (d) => (d.children ? null : "#999"));
 
-    node
+    node // display label
       .append("text")
       .attr("dy", "0.32em")
       .attr("x", (d) => d.depth * nodeSize + 6)
       .text((d) => d.data.name);
 
-    node
+    node // display value
       .append("text")
       .attr("dy", "0.32em")
       .attr("x", (d) => (d.depth * nodeSize + 6) * 2)
       .text((d) => getSumValueOfNode(d));
-  }
+  }, []);
+
+  const svgRef = useRef();
+
+  useEffect(() => {
+    const svg = select(svgRef.current);
+
+    // Clear previous drawing
+    svg.selectAll("*").remove();
+
+    // Example: draw a hierarchical structure
+    const tranformedData = transformData(data);
+    drawHierarchicalStructure(tranformedData, svg);
+  }, [data, action, drawHierarchicalStructure]);
 
   function getSumValueOfNode(d) {
     if (d.children) {
@@ -106,8 +124,22 @@ export function TreeView() {
     return d.data.value;
   }
 
+  const toolbarProps = {
+    skip: {
+      buttonText: "Skip",
+      buttonType: "button",
+      action: () => setAction({ invert: false, skip: !action.skip }),
+    },
+    invert: {
+      buttonText: "Invert",
+      buttonType: "button",
+      action: () => setAction({ skip: false, invert: !action.invert }),
+    },
+  };
+
   return (
     <div style={{ marginTop: 10 }}>
+      <Toolbar toolbarProps={toolbarProps} />
       <svg ref={svgRef}></svg>
     </div>
   );
