@@ -1,5 +1,6 @@
 import { hierarchy, select } from "d3";
 import { useRef, useEffect } from "react";
+import { transformData } from "../../utils/transformData";
 
 export function TreeView() {
   const data = {
@@ -13,37 +14,20 @@ export function TreeView() {
             Aug: 46.4,
           },
           {
-            Sep: [
-              {
-                Oct: 115.5,
-              },
-              {
-                Nov: 24.8,
-              },
-              {
-                Dec: [
-                  {
-                    Oct: 115.5,
-                  },
-                  {
-                    Nov: [
-                      {
-                        Oct: 115.5,
-                      },
-                      {
-                        Nov: 24.8,
-                      },
-                      {
-                        Dec: 97.2,
-                      },
-                    ],
-                  },
-                  {
-                    Dec: 97.2,
-                  },
-                ],
-              },
-            ],
+            Sep: 42.7,
+          },
+        ],
+      },
+      {
+        Q4: [
+          {
+            Oct: 115.5,
+          },
+          {
+            Nov: 24.8,
+          },
+          {
+            Dec: 97.2,
           },
         ],
       },
@@ -63,59 +47,41 @@ export function TreeView() {
     drawHierarchicalStructure(tranformedData, svg);
   }, [data]);
 
-  function transformData(obj, keyName = "hierarchy") {
-    // for object we get entries [key, value]
-    const entries = Object.entries(obj);
-
-    // check if object value is NOT array object
-    if (!Array.isArray(entries[0][1])) {
-      // returning { name: "object key", value: "object value" },
-      // the strcture of data to be compatible with d3.hierarchy()
-      return { name: entries[0][1], value: entries[0][1] };
-    }
-
-    const name = entries[0][0]; // object key from entries [key, value]
-    const children = entries[0][1].map((child) => {
-      // set children value as an array, with recursive logic for arbitrary depth
-      const childEntries = Object.entries(child);
-
-      if (Array.isArray(childEntries[0][1])) {
-        return {
-          name: childEntries[0][0],
-          children: childEntries[0][1].map((i) => transformData(i)),
-        };
-      }
-      return {
-        name: childEntries[0][0],
-        children: childEntries[0][1],
-      };
-    });
-
-    // returning the strcture of data to be compatible with d3.hierarchy()
-    return {
-      name,
-      children,
-    };
-  }
-
   function drawHierarchicalStructure(data, svg) {
     const nodeSize = 20;
-    const root = hierarchy(data);
+    const root = hierarchy(data).eachBefore(
+      // for each node and decendandt in pre-order traversal we add am index value,
+      // starting with the 0
+      (
+        (i) => (d) =>
+          (d.index = i++)
+      )(0)
+    );
     const nodes = root.descendants();
+
+    console.log("nodes", nodes);
+
     const width = 1000;
-    const height = (nodes.length + 1) * nodeSize;
+    const height = (nodes.length + 2) * nodeSize;
 
     svg
-      .append("rect")
       .attr("width", width)
       .attr("height", height)
-      .attr("fill", "grey");
+      // .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
+      .attr(
+        "style",
+        "max-width: 100%; height: auto; font: 15px sans-serif; overflow: visible;"
+      );
 
-    const node = select("rect").selectAll("g").data(nodes).enter().append("g");
+    const node = svg
+      .selectAll("g")
+      .data(nodes)
+      .join("g")
+      .attr("transform", (d) => `translate(0,${d.index * nodeSize})`);
 
     node
-      .selectAll("circle")
-      .attr("cx", (d) => d.depth * nodeSize)
+      .append("circle")
+      .attr("cx", (d) => nodeSize)
       .attr("r", 2.5)
       .attr("fill", (d) => (d.children ? null : "#999"));
 
@@ -123,8 +89,26 @@ export function TreeView() {
       .append("text")
       .attr("dy", "0.32em")
       .attr("x", (d) => d.depth * nodeSize + 6)
-      .text((d) => `${d.data.name} ${d.data.value}`);
+      .text((d) => d.data.name);
+
+    node
+      .append("text")
+      .attr("dy", "0.32em")
+      .attr("x", (d) => (d.depth * nodeSize + 6) * 2)
+      .text((d) => getSumValueOfNode(d));
   }
 
-  return <svg ref={svgRef}></svg>;
+  function getSumValueOfNode(d) {
+    if (d.children) {
+      d.sum((child) => child.value);
+      return d.value;
+    }
+    return d.data.value;
+  }
+
+  return (
+    <div style={{ marginTop: 10 }}>
+      <svg ref={svgRef}></svg>
+    </div>
+  );
 }
