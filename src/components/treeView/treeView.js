@@ -43,20 +43,42 @@ export function TreeView() {
 
     // Example: draw a hierarchical structure
     const tranformedData = transformData(data);
+    console.log("transformedData", tranformedData);
     drawHierarchicalStructure(tranformedData, svg);
   }, [data]);
 
   function transformData(obj, keyName = "hierarchy") {
-    if (typeof obj !== "object" || obj === null) {
-      return { name: keyName, value: obj };
+    // for object we get entries [key, value]
+    const entries = Object.entries(obj);
+
+    if (!Array.isArray(entries[0][1])) {
+      // check if object value is an array object
+      const keyValue = Object.entries(entries[0][1]); // object value
+
+      // returning { name: "object key", value: "object value" },
+      // the strcture of data to be compatible with d3.hierarchy()
+      return { name: keyValue[0][0], value: keyValue[0][1] };
     }
 
-    const children = Object.entries(obj).map(([keyName, value]) =>
-      transformData(value, keyName)
-    );
+    const name = entries[0][0]; // object key from entries [key, value]
+    const children = entries[0][1].map((child) => {
+      // set children value as an array, with recursive logic for arbitrary depth
+      const childEntries = Object.entries(child);
 
+      if (Array.isArray(childEntries[0][1])) {
+        return {
+          name: childEntries[0][0],
+          children: [
+            childEntries[0][1].map(() => transformData(childEntries[0][1])),
+          ],
+        };
+      }
+      return null;
+    });
+
+    // returning the strcture of data to be compatible with d3.hierarchy()
     return {
-      name: keyName,
+      name,
       children,
     };
   }
@@ -87,9 +109,6 @@ export function TreeView() {
       .attr("dy", "0.32em")
       .attr("x", (d) => d.depth * nodeSize + 6)
       .text((d) => `${d.data.name} ${d.data.value}`);
-
-    console.log("nodes", nodes);
-    console.log("root", root);
   }
 
   return <svg ref={svgRef}></svg>;
