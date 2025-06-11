@@ -102,10 +102,11 @@ export function TreeView() {
 
         if (d.invert && !d.skip) {
           console.log("dv", d);
+          d.store = d.data.value * -1;
           if (d.children) {
             // d.store = d.data.value * -1;
             d.children.forEach((c) => {
-              c.store = d.data.value * -1;
+              c.store = c.data.value * -1;
               c.skip = actionRef.current.skip;
               c.invert = actionRef.current.invert;
               svg
@@ -122,7 +123,23 @@ export function TreeView() {
         }
 
         if (!d.invert && !d.skip) {
-          d.store = d.data.value;
+          if (d.children) {
+            // d.store = d.data.value * -1;
+            d.children.forEach((c) => {
+              c.store = c.data.value;
+              c.skip = actionRef.current.skip;
+              c.invert = actionRef.current.invert;
+              svg
+                .selectAll("g")
+                .filter((d) => (d.index = c.index))
+                .selectAll(".label")
+                .text((d) => {
+                  return d.invert ? `-- ${d.data.name}` : d.data.name;
+                });
+            });
+          } else {
+            d.store = d.data.value;
+          }
         }
 
         svg
