@@ -84,38 +84,28 @@ export function TreeView() {
         d.skip = actionRef.current.skip;
         d.invert = actionRef.current.invert;
 
-        select(this)
-          .selectAll("text")
-          .style("text-decoration", (d) => {
-            return d.skip ? "line-through" : "none";
-          });
-
-        select(this)
-          .select(".label")
-          .text((d) => {
-            return d.invert ? `-- ${d.data.name}` : d.data.name;
-          });
-
         if (d.skip && !d.invert) {
-          d.store = 0;
+          if (d.children) {
+            d.children.forEach((c) => {
+              const cNode = root.find((d) => d.index === c.index);
+              cNode.skip = d.skip;
+              cNode.invert = d.invert;
+              cNode.store = 0;
+            });
+          } else {
+            d.store = 0;
+          }
         }
 
         if (d.invert && !d.skip) {
           console.log("dv", d);
           d.store = d.data.value * -1;
           if (d.children) {
-            // d.store = d.data.value * -1;
             d.children.forEach((c) => {
-              c.store = c.data.value * -1;
-              c.skip = actionRef.current.skip;
-              c.invert = actionRef.current.invert;
-              svg
-                .selectAll("g")
-                .filter((d) => (d.index = c.index))
-                .selectAll(".label")
-                .text((d) => {
-                  return d.invert ? `-- ${d.data.name}` : d.data.name;
-                });
+              const cNode = root.find((d) => d.index === c.index);
+              cNode.skip = d.skip;
+              cNode.invert = d.invert;
+              cNode.store = c.data.value * -1;
             });
           } else {
             d.store = d.data.value * -1;
@@ -124,23 +114,30 @@ export function TreeView() {
 
         if (!d.invert && !d.skip) {
           if (d.children) {
-            // d.store = d.data.value * -1;
             d.children.forEach((c) => {
-              c.store = c.data.value;
-              c.skip = actionRef.current.skip;
-              c.invert = actionRef.current.invert;
-              svg
-                .selectAll("g")
-                .filter((d) => (d.index = c.index))
-                .selectAll(".label")
-                .text((d) => {
-                  return d.invert ? `-- ${d.data.name}` : d.data.name;
-                });
+              const cNode = root.find((d) => d.index === c.index);
+              cNode.skip = d.skip;
+              cNode.invert = d.invert;
+              cNode.store = c.data.value;
             });
           } else {
             d.store = d.data.value;
           }
         }
+
+        svg
+          .selectAll("g")
+          .selectAll("text")
+          .style("text-decoration", (d) => {
+            return d.skip ? "line-through" : "none";
+          });
+
+        svg
+          .selectAll("g")
+          .selectAll(".label")
+          .text((d) => {
+            return d.invert ? `-- ${d.data.name}` : d.data.name;
+          });
 
         svg
           .selectAll("g")
@@ -187,7 +184,6 @@ export function TreeView() {
 
   function getSumValueOfNode(d) {
     if (d.children) {
-      console.log("d.children", d.descendants());
       const childrenStoredValues = d
         .descendants()
         .filter((d) => d.store)
