@@ -59,7 +59,7 @@ export function TreeView() {
         d.skip = false;
         d.invert = false;
         d.collapsed = false;
-        d.store = d.data.value; // store the modified values
+        d.store = d.data.value; // store the values for leaves
       })(0)
     );
     const nodes = root.descendants();
@@ -137,7 +137,7 @@ export function TreeView() {
         svg
           .selectAll("g")
           .selectAll(".value")
-          .text((d) => getSumValueOfNode(d));
+          .text((d) => getSumValueOfNode(d, actionRef.current.invert));
       });
 
     node
