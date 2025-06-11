@@ -77,7 +77,7 @@ export function TreeView() {
 
     const node = svg
       .selectAll("g")
-      .data(nodes, (d) => d)
+      .data(nodes)
       .join("g")
       .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
       .on("click", function (e, d) {
@@ -103,11 +103,12 @@ export function TreeView() {
         }
 
         if (d.invert && !d.skip) {
-          d.store = d.value * -1;
+          console.log("dv", d);
+          d.store = d.data.value * -1;
         }
 
         if (!d.invert && !d.skip) {
-          d.store = d.value;
+          d.store = d.data.value;
         }
 
         console.log("d2", d);
@@ -116,7 +117,7 @@ export function TreeView() {
 
         svg
           .selectAll("g")
-          .filter((d, i) => i === parentIndex)
+          .filter((d) => d.index === parentIndex)
           .selectAll(".value")
           .text((d) => getSumValueOfNode(d));
       });
@@ -159,10 +160,16 @@ export function TreeView() {
   }, [data, drawHierarchicalStructure]);
 
   function getSumValueOfNode(d) {
-    const leavesStored = d.leaves().map((l) => l.store);
-
     if (d.children) {
-      const sumChildren = leavesStored.reduce((acc, curr) => acc + curr, 0);
+      console.log("d.children", d.descendants());
+      const childrenStoredValues = d
+        .descendants()
+        .filter((d) => d.store)
+        .map((d) => d.store);
+      const sumChildren = childrenStoredValues.reduce(
+        (acc, curr) => acc + curr,
+        0
+      );
       return sumChildren;
     }
     return d.data.value;
