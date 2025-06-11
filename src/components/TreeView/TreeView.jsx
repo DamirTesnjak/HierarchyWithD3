@@ -58,7 +58,7 @@ export function TreeView() {
         d.skip = false;
         d.invert = false;
         d.collapsed = false;
-        d.store = 0; // store the old values
+        d.store = d.data.value; // store the modified values
       })(0)
     );
     const nodes = root.descendants();
@@ -96,46 +96,29 @@ export function TreeView() {
             return d.invert ? `-- ${d.data.name}` : d.data.name;
           });
 
-        if (d.skip) {
-          d.store = d.value;
-          d.value = 0;
-        }
+        console.log("d1", d);
 
-        if (!d.skip) {
-          d.value = d.store;
+        if (d.skip && !d.invert) {
           d.store = 0;
         }
 
-        if (d.invert) {
+        if (d.invert && !d.skip) {
+          d.store = d.value * -1;
+        }
+
+        if (!d.invert && !d.skip) {
           d.store = d.value;
-          d.value = d.value * -1;
         }
 
-        if (!d.invert) {
-          d.value = d.store;
-          d.store = 0;
-        }
+        console.log("d2", d);
 
-        const selectedValue = d.value;
         const parentIndex = d.parent.index;
 
         svg
           .selectAll("g")
           .filter((d, i) => i === parentIndex)
-          .select(".value")
-          .text((d) => {
-            //in parent store the skipped values, then send them to getSumValuesOfNode()
-            return getSumValueOfNode(d);
-            /*console.log("ddd", d);
-            d.invert = actionRef.current.invert;
-            if (d.invert) {
-              d.value = d.value - selectedValue;
-            }
-            if (!d.invert) {
-              d.value = d.value + selectedValue;
-            }
-            return d.value;*/
-          });
+          .selectAll(".value")
+          .text((d) => getSumValueOfNode(d));
       });
 
     node
@@ -176,18 +159,11 @@ export function TreeView() {
   }, [data, drawHierarchicalStructure]);
 
   function getSumValueOfNode(d) {
-    /*d.descendants().forEach((d) => {
-      if (d.skip) {
-        d.value = 0;
-      }
-      if (d.invert) {
-        d.value = 0 - d.value;
-      }
-    });*/
+    const leavesStored = d.leaves().map((l) => l.store);
 
     if (d.children) {
-      d.sum((child) => child.value);
-      return d.value;
+      const sumChildren = leavesStored.reduce((acc, curr) => acc + curr, 0);
+      return sumChildren;
     }
     return d.data.value;
   }
