@@ -96,8 +96,6 @@ export function TreeView() {
             return d.invert ? `-- ${d.data.name}` : d.data.name;
           });
 
-        console.log("d1", d);
-
         if (d.skip && !d.invert) {
           d.store = 0;
         }
@@ -111,13 +109,8 @@ export function TreeView() {
           d.store = d.data.value;
         }
 
-        console.log("d2", d);
-
-        const parentIndex = d.parent.index;
-
         svg
           .selectAll("g")
-          .filter((d) => d.index === parentIndex)
           .selectAll(".value")
           .text((d) => getSumValueOfNode(d));
       });
