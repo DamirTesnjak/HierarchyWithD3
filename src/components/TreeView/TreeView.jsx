@@ -31,13 +31,13 @@ export function TreeView() {
             {
               Dec: [
                 {
-                  Oct: 115.5,
+                  "01": 115.5,
                 },
                 {
-                  Nov: 24.8,
+                  "02": 24.8,
                 },
                 {
-                  Dec: 97.2,
+                  "03": 97.2,
                 },
               ],
             },
@@ -102,7 +102,23 @@ export function TreeView() {
 
         if (d.invert && !d.skip) {
           console.log("dv", d);
-          d.store = d.data.value * -1;
+          if (d.children) {
+            // d.store = d.data.value * -1;
+            d.children.forEach((c) => {
+              c.store = d.data.value * -1;
+              c.skip = actionRef.current.skip;
+              c.invert = actionRef.current.invert;
+              svg
+                .selectAll("g")
+                .filter((d) => (d.index = c.index))
+                .selectAll(".label")
+                .text((d) => {
+                  return d.invert ? `-- ${d.data.name}` : d.data.name;
+                });
+            });
+          } else {
+            d.store = d.data.value * -1;
+          }
         }
 
         if (!d.invert && !d.skip) {
