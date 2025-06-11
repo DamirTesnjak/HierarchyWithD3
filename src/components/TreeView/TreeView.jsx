@@ -58,6 +58,7 @@ export function TreeView() {
         d.skip = false;
         d.invert = false;
         d.collapsed = false;
+        d.store = 0; // store the old values
       })(0)
     );
     const nodes = root.descendants();
@@ -84,7 +85,7 @@ export function TreeView() {
         d.invert = actionRef.current.invert;
 
         select(this)
-          .select(".value")
+          .selectAll("text")
           .style("text-decoration", (d) => {
             return d.skip ? "line-through" : "none";
           });
@@ -95,6 +96,26 @@ export function TreeView() {
             return d.invert ? `-- ${d.data.name}` : d.data.name;
           });
 
+        if (d.skip) {
+          d.store = d.value;
+          d.value = 0;
+        }
+
+        if (!d.skip) {
+          d.value = d.store;
+          d.store = 0;
+        }
+
+        if (d.invert) {
+          d.store = d.value;
+          d.value = d.value * -1;
+        }
+
+        if (!d.invert) {
+          d.value = d.store;
+          d.store = 0;
+        }
+
         const selectedValue = d.value;
         const parentIndex = d.parent.index;
 
@@ -103,7 +124,9 @@ export function TreeView() {
           .filter((d, i) => i === parentIndex)
           .select(".value")
           .text((d) => {
-            console.log("ddd", d);
+            //in parent store the skipped values, then send them to getSumValuesOfNode()
+            return getSumValueOfNode(d);
+            /*console.log("ddd", d);
             d.invert = actionRef.current.invert;
             if (d.invert) {
               d.value = d.value - selectedValue;
@@ -111,7 +134,7 @@ export function TreeView() {
             if (!d.invert) {
               d.value = d.value + selectedValue;
             }
-            return d.value;
+            return d.value;*/
           });
       });
 
