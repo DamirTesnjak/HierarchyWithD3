@@ -1,5 +1,5 @@
 import { hierarchy, select } from "d3";
-import { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import { useRef, useEffect, useCallback, useMemo } from "react";
 import { transformData } from "../../utils/transformData";
 import Toolbar from "../Toolbar";
 
@@ -84,10 +84,34 @@ export function TreeView() {
         d.invert = actionRef.current.invert;
 
         select(this)
-          .selectAll("text")
+          .select(".value")
           .style("text-decoration", (d) => {
-            console.log("d", d);
             return d.skip ? "line-through" : "none";
+          });
+
+        select(this)
+          .select(".label")
+          .text((d) => {
+            return d.invert ? `-- ${d.data.name}` : d.data.name;
+          });
+
+        const selectedValue = d.value;
+        const parentIndex = d.parent.index;
+
+        svg
+          .selectAll("g")
+          .filter((d, i) => i === parentIndex)
+          .select(".value")
+          .text((d) => {
+            console.log("ddd", d);
+            d.invert = actionRef.current.invert;
+            if (d.invert) {
+              d.value = d.value - selectedValue;
+            }
+            if (!d.invert) {
+              d.value = d.value + selectedValue;
+            }
+            return d.value;
           });
       });
 
@@ -101,12 +125,14 @@ export function TreeView() {
       .append("text")
       .attr("dy", "0.32em")
       .attr("x", (d) => d.depth * nodeSize + 6)
+      .attr("class", "label")
       .text((d) => d.data.name);
 
     node // display value
       .append("text")
       .attr("dy", "0.32em")
       .attr("x", (d) => (d.depth * nodeSize + 6) * 2)
+      .attr("class", "value")
       .text((d) => getSumValueOfNode(d));
   }, []);
 
@@ -127,6 +153,15 @@ export function TreeView() {
   }, [data, drawHierarchicalStructure]);
 
   function getSumValueOfNode(d) {
+    /*d.descendants().forEach((d) => {
+      if (d.skip) {
+        d.value = 0;
+      }
+      if (d.invert) {
+        d.value = 0 - d.value;
+      }
+    });*/
+
     if (d.children) {
       d.sum((child) => child.value);
       return d.value;
