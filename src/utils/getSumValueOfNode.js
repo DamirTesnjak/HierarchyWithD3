@@ -1,19 +1,26 @@
 export function getSumValueOfNode(d, invert = false) {
-  console.log("d", d);
   if (d.children) {
     const childrenStoredValues = d
-      .descendants()
-      .filter((d) => (invert ? d.store < 0 : d.store))
+      .leaves()
+      .filter((d) => {
+        if (invert) {
+          return d.store < 0;
+        }
+        return d.store >= 0;
+      })
       .map((d) => d.store);
-    console.log("childrenStoredValues", childrenStoredValues);
+
     const sumChildren = childrenStoredValues.reduce(
       (acc, curr) => acc + curr,
       d.sumStore && invert ? d.sumStore : 0
     );
 
-    if (!invert) {
+    if (!invert || sumChildren === 0) {
       d.sumStore = sumChildren;
     }
+
+    console.log("childrenStoredValues", childrenStoredValues);
+    console.log("d.sumStore", d.sumStore);
 
     return sumChildren;
   }

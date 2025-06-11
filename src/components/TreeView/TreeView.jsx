@@ -93,8 +93,9 @@ export function TreeView() {
         };
 
         if (d.skip && !d.invert) {
+          console.log("d", d.leaves());
           if (d.children) {
-            d.children.forEach((c) => setChildNodesValues(c, 0));
+            d.leaves().forEach((c) => setChildNodesValues(c, 0));
           } else {
             d.store = 0;
           }
@@ -104,7 +105,7 @@ export function TreeView() {
           console.log("dv", d);
           d.store = d.data.value * -1;
           if (d.children) {
-            d.children.forEach((c) =>
+            d.leaves().forEach((c) =>
               setChildNodesValues(c, c.data.value * -1)
             );
           } else {
@@ -114,7 +115,7 @@ export function TreeView() {
 
         if (!d.invert && !d.skip) {
           if (d.children) {
-            d.children.forEach((c) => setChildNodesValues(c, c.data.value));
+            d.leaves().forEach((c) => setChildNodesValues(c, c.data.value));
           } else {
             d.store = d.data.value;
           }
