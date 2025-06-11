@@ -1,6 +1,7 @@
 import { hierarchy, select } from "d3";
 import { useRef, useEffect, useCallback, useMemo } from "react";
 import { transformData } from "../../utils/transformData";
+import { getSumValueOfNode } from "../../utils/getSumValueOfNode";
 import Toolbar from "../Toolbar";
 
 export function TreeView() {
@@ -84,14 +85,16 @@ export function TreeView() {
         d.skip = actionRef.current.skip;
         d.invert = actionRef.current.invert;
 
+        const setChildNodesValues = (child, storeValue) => {
+          const cNode = root.find((d) => d.index === child.index);
+          cNode.skip = d.skip;
+          cNode.invert = d.invert;
+          cNode.store = storeValue;
+        };
+
         if (d.skip && !d.invert) {
           if (d.children) {
-            d.children.forEach((c) => {
-              const cNode = root.find((d) => d.index === c.index);
-              cNode.skip = d.skip;
-              cNode.invert = d.invert;
-              cNode.store = 0;
-            });
+            d.children.forEach((c) => setChildNodesValues(c, 0));
           } else {
             d.store = 0;
           }
@@ -101,12 +104,9 @@ export function TreeView() {
           console.log("dv", d);
           d.store = d.data.value * -1;
           if (d.children) {
-            d.children.forEach((c) => {
-              const cNode = root.find((d) => d.index === c.index);
-              cNode.skip = d.skip;
-              cNode.invert = d.invert;
-              cNode.store = c.data.value * -1;
-            });
+            d.children.forEach((c) =>
+              setChildNodesValues(c, c.data.value * -1)
+            );
           } else {
             d.store = d.data.value * -1;
           }
@@ -114,12 +114,7 @@ export function TreeView() {
 
         if (!d.invert && !d.skip) {
           if (d.children) {
-            d.children.forEach((c) => {
-              const cNode = root.find((d) => d.index === c.index);
-              cNode.skip = d.skip;
-              cNode.invert = d.invert;
-              cNode.store = c.data.value;
-            });
+            d.children.forEach((c) => setChildNodesValues(c, c.data.value));
           } else {
             d.store = d.data.value;
           }
@@ -181,21 +176,6 @@ export function TreeView() {
 
     drawHierarchicalStructure(tranformedData, svg);
   }, [data, drawHierarchicalStructure]);
-
-  function getSumValueOfNode(d) {
-    if (d.children) {
-      const childrenStoredValues = d
-        .descendants()
-        .filter((d) => d.store)
-        .map((d) => d.store);
-      const sumChildren = childrenStoredValues.reduce(
-        (acc, curr) => acc + curr,
-        0
-      );
-      return sumChildren;
-    }
-    return d.data.value;
-  }
 
   const toolbarProps = {
     skip: {
