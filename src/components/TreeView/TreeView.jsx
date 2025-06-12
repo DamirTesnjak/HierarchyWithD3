@@ -21,6 +21,39 @@ export function TreeView() {
             },
           ],
         },
+        {
+          Q4: [
+            {
+              Oct: 115.5,
+            },
+            {
+              Nov: 24.8,
+            },
+            {
+              Dec: [
+                {
+                  "01": 115.5,
+                },
+                {
+                  "02": 24.8,
+                },
+                {
+                  "03": [
+                    {
+                      "01:00": 115.5,
+                    },
+                    {
+                      "02:00": 24.8,
+                    },
+                    {
+                      "03:00": 97.2,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     }),
     []
@@ -37,7 +70,8 @@ export function TreeView() {
         d.invert = false;
         d.collapsed = false;
         d.store = d.data.value; // store the values for leaves
-        d.inverted = false; // tag if value is inve
+        d.inverted = false; // tag if value is inverted
+        d.skipped = false; // tag if value is skippd
       })(0)
     );
     const nodes = root.descendants();
@@ -63,41 +97,45 @@ export function TreeView() {
         d.skip = actionRef.current.skip;
         d.invert = actionRef.current.invert;
 
-        const setChildNodesValues = (child, storeValue, inverted) => {
+        const setChildNodesValues = (child, storeValue, inverted, skipped) => {
           const cNode = root.find((d) => d.index === child.index);
           cNode.skip = d.skip;
-          cNode.invert = d.invert;
           cNode.store = storeValue;
           cNode.inverted = inverted;
+          cNode.skipped = skipped;
         };
 
         if (d.skip && !d.invert) {
           if (d.children) {
-            d.leaves().forEach((c) => setChildNodesValues(c, 0, false));
+            d.leaves().forEach((c) => setChildNodesValues(c, 0, false, true));
           } else {
             d.store = 0;
+            d.inverted = false;
+            d.skipped = true;
           }
         }
 
         if (d.invert && !d.skip) {
           if (d.children) {
             d.leaves().forEach((c) =>
-              setChildNodesValues(c, -c.data.value, true)
+              setChildNodesValues(c, -c.data.value, true, false)
             );
           } else {
             d.store = -d.data.value;
             d.inverted = true;
+            d.skipped = false;
           }
         }
 
         if (!d.invert && !d.skip) {
           if (d.children) {
             d.leaves().forEach((c) =>
-              setChildNodesValues(c, c.data.value, false)
+              setChildNodesValues(c, c.data.value, false, false)
             );
           } else {
             d.store = d.data.value;
             d.inverted = false;
+            d.skipped = false;
           }
         }
 
@@ -105,14 +143,14 @@ export function TreeView() {
           .selectAll("g")
           .selectAll("text")
           .style("text-decoration", (d) => {
-            return d.skip ? "line-through" : "none";
+            return d.skipped ? "line-through" : "none";
           });
 
         svg
           .selectAll("g")
           .selectAll(".label")
           .text((d) => {
-            return d.invert ? `-${d.data.name}` : d.data.name;
+            return d.inverted ? `-${d.data.name}` : d.data.name;
           });
 
         svg
