@@ -92,11 +92,8 @@ export function TreeView() {
       .join("g")
       .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
       .on("click", function (e, d) {
-        console.log("d", d.parent);
         d.skip = actionRef.current.skip;
         d.invert = actionRef.current.invert;
-
-        const disableClick = d.parent.sumStore === 0 || d.sumStore === 0;
 
         const setChildNodesValues = (child, storeValue) => {
           const cNode = root.find((d) => d.index === child.index);
@@ -114,13 +111,25 @@ export function TreeView() {
         }
 
         if (d.invert && !d.skip) {
-          console.log("dv", d);
           if (d.children) {
             d.leaves().forEach((c) =>
-              setChildNodesValues(c, c.data.value * -2)
+              setChildNodesValues(
+                c,
+                d.parent.sumStore && d.parent.sumStore !== 0
+                  ? c.data.value * -2
+                  : c.data.value * -1
+              )
             );
           } else {
-            d.store = d.data.value * -2;
+            console.log(
+              "d.parent.sumStore",
+              d.parent.sumStore && d.parent.sumStore !== 0
+            );
+            d.store =
+              d.parent.sumStore && d.parent.sumStore !== 0
+                ? d.data.value * -2
+                : d.data.value * -1;
+            console.log("dv", d.store);
           }
         }
 
@@ -130,10 +139,6 @@ export function TreeView() {
           } else {
             d.store = d.data.value;
           }
-          svg
-            .selectAll("g")
-            .selectAll(".value")
-            .text((d) => getSumValueOfNode(d, actionRef.current.invert));
         }
 
         svg
@@ -150,12 +155,13 @@ export function TreeView() {
             return d.invert ? `-- ${d.data.name}` : d.data.name;
           });
 
-        if (!disableClick) {
-          svg
-            .selectAll("g")
-            .selectAll(".value")
-            .text((d) => getSumValueOfNode(d, actionRef.current.invert));
-        }
+        svg
+          .selectAll("g")
+          .selectAll(".value")
+          .text((d) => {
+            console.log("d", d);
+            return getSumValueOfNode(d, actionRef.current.invert);
+          });
       });
 
     node

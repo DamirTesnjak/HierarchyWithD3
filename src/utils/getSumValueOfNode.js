@@ -6,7 +6,7 @@ export function getSumValueOfNode(d, invert = false) {
         if (invert) {
           return d.store < 0;
         }
-        return d.store >= 0;
+        return d.store;
       })
       .map((d) => d.store);
 
