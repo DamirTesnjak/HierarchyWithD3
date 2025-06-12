@@ -115,26 +115,25 @@ export function TreeView() {
 
         if (d.invert && !d.skip) {
           console.log("dv", d);
-          d.store = d.data.value * -1;
           if (d.children) {
             d.leaves().forEach((c) =>
-              setChildNodesValues(c, c.data.value * -1)
+              setChildNodesValues(c, c.data.value * -2)
             );
           } else {
-            d.store = d.data.value * -1;
+            d.store = d.data.value * -2;
           }
         }
 
         if (!d.invert && !d.skip) {
           if (d.children) {
             d.leaves().forEach((c) => setChildNodesValues(c, c.data.value));
-            svg
-              .selectAll("g")
-              .selectAll(".value")
-              .text((d) => getSumValueOfNode(d, actionRef.current.invert));
           } else {
             d.store = d.data.value;
           }
+          svg
+            .selectAll("g")
+            .selectAll(".value")
+            .text((d) => getSumValueOfNode(d, actionRef.current.invert));
         }
 
         svg
