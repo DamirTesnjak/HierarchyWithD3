@@ -21,39 +21,6 @@ export function TreeView() {
             },
           ],
         },
-        {
-          Q4: [
-            {
-              Oct: 115.5,
-            },
-            {
-              Nov: 24.8,
-            },
-            {
-              Dec: [
-                {
-                  "01": 115.5,
-                },
-                {
-                  "02": 24.8,
-                },
-                {
-                  "03": [
-                    {
-                      "01:00": 115.5,
-                    },
-                    {
-                      "02:00": 24.8,
-                    },
-                    {
-                      "03:00": 97.2,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
       ],
     }),
     []
@@ -70,6 +37,7 @@ export function TreeView() {
         d.invert = false;
         d.collapsed = false;
         d.store = d.data.value; // store the values for leaves
+        d.inverted = false; // tag if value is inve
       })(0)
     );
     const nodes = root.descendants();
@@ -80,7 +48,7 @@ export function TreeView() {
     svg
       .attr("width", width)
       .attr("height", height)
-      // .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
+      .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
       .attr(
         "style",
         "max-width: 100%; height: auto; font: 15px sans-serif; overflow: visible;"
@@ -95,49 +63,42 @@ export function TreeView() {
         d.skip = actionRef.current.skip;
         d.invert = actionRef.current.invert;
 
-        const setChildNodesValues = (child, storeValue) => {
+        const setChildNodesValues = (child, storeValue, inverted) => {
           const cNode = root.find((d) => d.index === child.index);
           cNode.skip = d.skip;
           cNode.invert = d.invert;
           cNode.store = storeValue;
+          cNode.inverted = inverted;
         };
 
         if (d.skip && !d.invert) {
           if (d.children) {
-            d.leaves().forEach((c) => setChildNodesValues(c, 0));
+            d.leaves().forEach((c) => setChildNodesValues(c, 0, false));
           } else {
             d.store = 0;
+            d.inverted = true;
           }
         }
 
         if (d.invert && !d.skip) {
           if (d.children) {
             d.leaves().forEach((c) =>
-              setChildNodesValues(
-                c,
-                d.parent.sumStore && d.parent.sumStore !== 0
-                  ? c.data.value * -2
-                  : c.data.value * -1
-              )
+              setChildNodesValues(c, c.data.value * -2, true)
             );
           } else {
-            console.log(
-              "d.parent.sumStore",
-              d.parent.sumStore && d.parent.sumStore !== 0
-            );
-            d.store =
-              d.parent.sumStore && d.parent.sumStore !== 0
-                ? d.data.value * -2
-                : d.data.value * -1;
-            console.log("dv", d.store);
+            d.store = d.data.value * -2;
+            d.inverted = true;
           }
         }
 
         if (!d.invert && !d.skip) {
           if (d.children) {
-            d.leaves().forEach((c) => setChildNodesValues(c, c.data.value));
+            d.leaves().forEach((c) =>
+              setChildNodesValues(c, c.data.value, false)
+            );
           } else {
             d.store = d.data.value;
+            d.inverted = false;
           }
         }
 
@@ -152,14 +113,14 @@ export function TreeView() {
           .selectAll("g")
           .selectAll(".label")
           .text((d) => {
-            return d.invert ? `-- ${d.data.name}` : d.data.name;
+            return d.invert ? `-${d.data.name}` : d.data.name;
           });
 
         svg
           .selectAll("g")
           .selectAll(".value")
           .text((d) => {
-            console.log("d", d);
+            console.log("ud", d);
             return getSumValueOfNode(d, actionRef.current.invert);
           });
       });
