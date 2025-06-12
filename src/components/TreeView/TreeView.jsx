@@ -76,17 +76,16 @@ export function TreeView() {
             d.leaves().forEach((c) => setChildNodesValues(c, 0, false));
           } else {
             d.store = 0;
-            d.inverted = true;
           }
         }
 
         if (d.invert && !d.skip) {
           if (d.children) {
             d.leaves().forEach((c) =>
-              setChildNodesValues(c, c.data.value * -2, true)
+              setChildNodesValues(c, -c.data.value, true)
             );
           } else {
-            d.store = d.data.value * -2;
+            d.store = -d.data.value;
             d.inverted = true;
           }
         }
@@ -120,7 +119,6 @@ export function TreeView() {
           .selectAll("g")
           .selectAll(".value")
           .text((d) => {
-            console.log("ud", d);
             return getSumValueOfNode(d, actionRef.current.invert);
           });
       });
