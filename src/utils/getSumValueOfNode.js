@@ -19,10 +19,10 @@ export function getSumValueOfNode(d, invert = false) {
       d.sumStore = sumChildren;
     }
 
-    console.log("childrenStoredValues", childrenStoredValues);
-    console.log("d.sumStore", d.sumStore);
-
-    return sumChildren;
+    if (sumChildren > 0 && (!invert || invert)) {
+      return sumChildren;
+    }
+    return 0;
   }
   return d.data.value;
 }

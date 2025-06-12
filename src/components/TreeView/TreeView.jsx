@@ -38,7 +38,17 @@ export function TreeView() {
                   "02": 24.8,
                 },
                 {
-                  "03": 97.2,
+                  "03": [
+                    {
+                      "01:00": 115.5,
+                    },
+                    {
+                      "02:00": 24.8,
+                    },
+                    {
+                      "03:00": 97.2,
+                    },
+                  ],
                 },
               ],
             },
@@ -82,8 +92,11 @@ export function TreeView() {
       .join("g")
       .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
       .on("click", function (e, d) {
+        console.log("d", d.parent);
         d.skip = actionRef.current.skip;
         d.invert = actionRef.current.invert;
+
+        const disableClick = d.parent.sumStore === 0 || d.sumStore === 0;
 
         const setChildNodesValues = (child, storeValue) => {
           const cNode = root.find((d) => d.index === child.index);
@@ -93,7 +106,6 @@ export function TreeView() {
         };
 
         if (d.skip && !d.invert) {
-          console.log("d", d.leaves());
           if (d.children) {
             d.leaves().forEach((c) => setChildNodesValues(c, 0));
           } else {
@@ -116,6 +128,10 @@ export function TreeView() {
         if (!d.invert && !d.skip) {
           if (d.children) {
             d.leaves().forEach((c) => setChildNodesValues(c, c.data.value));
+            svg
+              .selectAll("g")
+              .selectAll(".value")
+              .text((d) => getSumValueOfNode(d, actionRef.current.invert));
           } else {
             d.store = d.data.value;
           }
@@ -135,10 +151,12 @@ export function TreeView() {
             return d.invert ? `-- ${d.data.name}` : d.data.name;
           });
 
-        svg
-          .selectAll("g")
-          .selectAll(".value")
-          .text((d) => getSumValueOfNode(d, actionRef.current.invert));
+        if (!disableClick) {
+          svg
+            .selectAll("g")
+            .selectAll(".value")
+            .text((d) => getSumValueOfNode(d, actionRef.current.invert));
+        }
       });
 
     node
