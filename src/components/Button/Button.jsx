@@ -1,10 +1,14 @@
 import "./button.css";
 
 export default function Button(props) {
-  const { text, type, onClick } = props;
+  const { text, type, skip, invert, onClick } = props;
 
   return (
-    <button type={type} onClick={onClick}>
+    <button
+      style={{ fontWeight: skip || invert ? 500 : 300 }}
+      type={type}
+      onClick={onClick}
+    >
       {text}
     </button>
   );
