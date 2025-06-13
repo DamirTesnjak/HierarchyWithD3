@@ -21,7 +21,7 @@ export function displayContextMenu(e, args) {
     .select("#skip")
     .style("font-weight", d.skipped ? "bold" : "normal")
     .on("click", function (e) {
-      actionRef.current = { invert: false, skip: !actionRef.current.skip };
+      actionRef.current = { invert: false, skip: true };
       onClickNode({ d, actionRef, labelWidth, root, group });
     });
 
@@ -29,7 +29,7 @@ export function displayContextMenu(e, args) {
     .select("#invert")
     .style("font-weight", d.inverted ? "bold" : "normal")
     .on("click", function (e) {
-      actionRef.current = { skip: false, invert: !actionRef.current.invert };
+      actionRef.current = { invert: true, skip: false };
       onClickNode({ d, actionRef, labelWidth, root, group });
     });
 
