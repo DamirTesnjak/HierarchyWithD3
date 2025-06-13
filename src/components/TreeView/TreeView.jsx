@@ -3,11 +3,12 @@ import { useRef, useEffect, useCallback, useMemo } from "react";
 import { transformData } from "../../utils/transformData";
 import { getSumValueOfNode } from "../../utils/getSumValueOfNode";
 import Toolbar from "../Toolbar";
+import { fontColor } from "../../utils/fontColor";
 
 export function TreeView() {
   const data = useMemo(
     () => ({
-      Hierarchy: [
+      Total: [
         {
           Q3: [
             {
@@ -60,14 +61,12 @@ export function TreeView() {
   );
 
   const drawHierarchicalStructure = useCallback((data, svg) => {
-    const nodeSize = 20;
+    const nodeSize = 25;
     const root = hierarchy(data).eachBefore(
       // for each node and decendandt in pre-order traversal we add am index value,
       // starting with the 0
       ((i) => (d) => {
         d.index = i++;
-        d.skip = false;
-        d.invert = false;
         d.collapsed = false;
         d.store = d.data.value; // store the values for leaves
         d.inverted = false; // tag if value is inverted
@@ -76,13 +75,13 @@ export function TreeView() {
     );
     const nodes = root.descendants();
 
-    const width = 1000;
-    const height = (nodes.length + 2) * nodeSize;
+    const width = 250;
+    const height = nodes.length * nodeSize;
 
     svg
       .attr("width", width)
       .attr("height", height)
-      .attr("viewBox", [-nodeSize / 2, (-nodeSize * 3) / 2, width, height])
+      .attr("viewBox", [-10, -15, width, height])
       .attr(
         "style",
         "max-width: 100%; height: auto; font: 15px sans-serif; overflow: visible;"
@@ -99,7 +98,6 @@ export function TreeView() {
 
         const setChildNodesValues = (child, storeValue, inverted, skipped) => {
           const cNode = root.find((d) => d.index === child.index);
-          cNode.skip = d.skip;
           cNode.store = storeValue;
           cNode.inverted = inverted;
           cNode.skipped = skipped;
@@ -141,6 +139,7 @@ export function TreeView() {
 
         svg
           .selectAll("g")
+          .attr("fill", (d) => (d.children ? "grey" : "black"))
           .selectAll("text")
           .style("text-decoration", (d) => {
             return d.skipped ? "line-through" : "none";
@@ -149,37 +148,63 @@ export function TreeView() {
         svg
           .selectAll("g")
           .selectAll(".label")
-          .text((d) => {
-            return d.inverted ? `-${d.data.name}` : d.data.name;
-          });
+          .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
+          .attr("fill", (d) => fontColor(d))
+          .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
 
         svg
           .selectAll("g")
           .selectAll(".value")
+          .attr(
+            "x",
+            (d) =>
+              svg.select(".label").node().getBBox().width +
+              (d.depth > 0 ? d.depth : 1) * 25
+          )
+          .attr("fill", (d) => fontColor(d))
           .text((d) => {
-            return getSumValueOfNode(d, actionRef.current.invert);
+            return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
           });
       });
 
     node
       .append("circle")
-      .attr("cx", (d) => nodeSize)
       .attr("r", 2.5)
-      .attr("fill", (d) => (d.children ? null : "#999"));
+      .attr("fill", (d) => (d.children ? "black" : "#999"));
 
     node // display label
       .append("text")
-      .attr("dy", "0.32em")
-      .attr("x", (d) => d.depth * nodeSize + 6)
       .attr("class", "label")
+      .attr("dy", "0.32em")
+      .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
+      .attr("fill", (d) => fontColor(d))
+      .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
       .text((d) => d.data.name);
 
     node // display value
       .append("text")
-      .attr("dy", "0.32em")
-      .attr("x", (d) => (d.depth * nodeSize + 6) * 2)
       .attr("class", "value")
-      .text((d) => getSumValueOfNode(d));
+      .attr("dy", "0.32em")
+      .attr(
+        "x",
+        (d) =>
+          svg.select(".label").node().getBBox().width +
+          (d.depth > 0 ? d.depth : 1) * 25
+      )
+      .attr("fill", (d) => fontColor(d))
+      .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
+      .text((d) => getSumValueOfNode(d).toFixed(2));
+
+    const bbox = node.node().getBBox();
+
+    node
+      .insert("rect", ":first-child")
+      .attr("x", bbox.x - 5)
+      .attr("y", bbox.y - 4)
+      .attr("width", width)
+      .attr("height", nodeSize)
+      .attr("fill", "#f0f0f0")
+      .attr("stroke", "#ccc");
   }, []);
 
   const svgRef = useRef();
@@ -217,7 +242,9 @@ export function TreeView() {
   return (
     <div style={{ marginTop: 10 }}>
       <Toolbar toolbarProps={toolbarProps} actionStatuses={actionRef.current} />
-      <svg ref={svgRef}></svg>
+      <div>
+        <svg ref={svgRef}></svg>
+      </div>
     </div>
   );
 }
