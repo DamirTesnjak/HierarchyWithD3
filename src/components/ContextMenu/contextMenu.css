@@ -1,0 +1,20 @@
+#context-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    z-index: 1000;
+}
+
+#context-menu li {
+    list-style: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-align: left;
+}
+
+#context-menu li:hover {
+    background-color: #eee;
+}

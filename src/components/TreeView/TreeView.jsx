@@ -1,12 +1,16 @@
 import { hierarchy, select } from "d3";
 import { useRef, useEffect, useCallback, useMemo } from "react";
+
 import { transformData } from "../../utils/transformData";
 import { getSumValueOfNode } from "../../utils/getSumValueOfNode";
 import { valueTextPosition } from "../../utils/valueTextPosition";
 import { fontColor } from "../../utils/fontColor";
 import { onClickNode } from "../../utils/onClickNode";
+import { displayContextMenu } from "../../utils/displayContextMenu";
+
 import Toolbar from "../Toolbar";
 import jsonData from "../../data/random_nested_tree_10000_leaves";
+import { ContextMenu } from "../ContextMenu/ContextMenu";
 
 export function TreeView() {
   const data = useMemo(() => jsonData, []);
@@ -42,8 +46,12 @@ export function TreeView() {
       .data(nodes)
       .join("g")
       .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
+      .style("cursor", "pointer")
       .on("click", function (e, d) {
         onClickNode({ d, actionRef, labelWidth, root, group: svg });
+      })
+      .on("contextmenu", function (e, d) {
+        displayContextMenu(e);
       });
 
     node
@@ -119,6 +127,7 @@ export function TreeView() {
       }}
     >
       <Toolbar toolbarProps={toolbarProps} actionStatuses={actionRef.current} />
+      <ContextMenu />
       <div
         style={{
           marginTop: 10,
