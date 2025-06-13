@@ -3,8 +3,9 @@ import { useRef, useEffect, useCallback, useMemo } from "react";
 import { transformData } from "../../utils/transformData";
 import { getSumValueOfNode } from "../../utils/getSumValueOfNode";
 import { valueTextPosition } from "../../utils/valueTextPosition";
-import Toolbar from "../Toolbar";
 import { fontColor } from "../../utils/fontColor";
+import { onClickNode } from "../../utils/onClickNode";
+import Toolbar from "../Toolbar";
 
 export function TreeView() {
   const data = useMemo(
@@ -95,73 +96,7 @@ export function TreeView() {
       .join("g")
       .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
       .on("click", function (e, d) {
-        d.skip = actionRef.current.skip;
-        d.invert = actionRef.current.invert;
-
-        const setChildNodesValues = (child, storeValue, inverted, skipped) => {
-          const cNode = root.find((d) => d.index === child.index);
-          cNode.store = storeValue;
-          cNode.inverted = inverted;
-          cNode.skipped = skipped;
-        };
-
-        if (d.skip && !d.invert) {
-          if (d.children) {
-            d.leaves().forEach((c) => setChildNodesValues(c, 0, false, true));
-          } else {
-            d.store = 0;
-            d.inverted = false;
-            d.skipped = true;
-          }
-        }
-
-        if (d.invert && !d.skip) {
-          if (d.children) {
-            d.leaves().forEach((c) =>
-              setChildNodesValues(c, -c.data.value, true, false)
-            );
-          } else {
-            d.store = -d.data.value;
-            d.inverted = true;
-            d.skipped = false;
-          }
-        }
-
-        if (!d.invert && !d.skip) {
-          if (d.children) {
-            d.leaves().forEach((c) =>
-              setChildNodesValues(c, c.data.value, false, false)
-            );
-          } else {
-            d.store = d.data.value;
-            d.inverted = false;
-            d.skipped = false;
-          }
-        }
-
-        svg
-          .selectAll("g")
-          .attr("fill", (d) => (d.children ? "grey" : "black"))
-          .selectAll("text")
-          .style("text-decoration", (d) => {
-            return d.skipped ? "line-through" : "none";
-          });
-
-        svg
-          .selectAll("g")
-          .selectAll(".label")
-          .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
-          .attr("fill", (d) => fontColor(d))
-          .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
-
-        svg
-          .selectAll("g")
-          .selectAll(".value")
-          .attr("x", (d) => valueTextPosition(d, labelWidth))
-          .attr("fill", (d) => fontColor(d))
-          .text((d) => {
-            return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
-          });
+        onClickNode({ d, actionRef, labelWidth, root, group: svg });
       });
 
     node
@@ -211,7 +146,6 @@ export function TreeView() {
     const tranformedData = transformData(data);
 
     // draw a hierarchical structure
-
     drawHierarchicalStructure(tranformedData, svg);
   }, [data, drawHierarchicalStructure]);
 
