@@ -13,8 +13,59 @@ import jsonData from "../../data/random_nested_tree_10000_leaves";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 
 export function TreeView() {
-  const data = useMemo(() => jsonData, []);
-
+  const data = useMemo(
+    () => ({
+      Hierarchy: [
+        {
+          Q3: [
+            {
+              Jul: 113.4,
+            },
+            {
+              Aug: 46.4,
+            },
+            {
+              Sep: 42.7,
+            },
+          ],
+        },
+        {
+          Q4: [
+            {
+              Oct: 115.5,
+            },
+            {
+              Nov: 24.8,
+            },
+            {
+              Dec: [
+                {
+                  "01": 115.5,
+                },
+                {
+                  "02": 24.8,
+                },
+                {
+                  "03": [
+                    {
+                      "01:00": 115.5,
+                    },
+                    {
+                      "02:00": 24.8,
+                    },
+                    {
+                      "03:00": 97.2,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }),
+    []
+  );
   const drawHierarchicalStructure = useCallback((data, svg) => {
     const nodeSize = 25;
     const root = hierarchy(data).eachBefore(

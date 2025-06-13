@@ -43,5 +43,53 @@ export function displayContextMenu(e, args) {
       onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
     });
 
+  const fontStyle = contextMenu.select("#fontStyle");
+  const fontStyleLabel = fontStyle.select("#label");
+  const fontStyleBoldButton = fontStyle.select("#bold");
+  const fontStyleItalicButton = fontStyle.select("#italic");
+  const fontColor = contextMenu.select("#fontColor");
+  const fontColorLabel = fontColor.select("#label");
+  const fontColorButton = fontColor.select("#button");
+  const fontColorApplyButton = fontColor.select("#applyColorButton");
+
+  const fontSize = contextMenu.select("#fontSize");
+  const fontSizeInput = fontSize.select("#ifontSize");
+  const fontSizeApplyButton = fontSize.select("#applySizeButton");
+
+  fontStyleLabel.style("font-weight", d.bold || d.italic ? "bold" : "normal");
+  fontStyleBoldButton
+    .style("font-weight", d.bold ? "bold" : "normal")
+    .on("click", function (e) {
+      console.log("bold");
+    });
+
+  fontStyleItalicButton
+    .style("font-weight", d.italic ? "bold" : "normal")
+    .on("click", function (e) {
+      console.log("italic");
+    });
+
+  fontColorLabel.style("font-weight", d.color ? "bold" : "normal");
+
+  fontColorButton.on("click", function (e) {
+    e.stopPropagation();
+    console.log("fontColor");
+  });
+
+  fontColorApplyButton.on("click", function (e) {
+    const selectedFontColor = fontColorButton.property("value");
+    console.log("selectedFontColor", selectedFontColor);
+  });
+
+  fontSizeInput.on("click", function (e) {
+    e.stopPropagation();
+    console.log("fontSizeInput");
+  });
+
+  fontSizeApplyButton.on("click", function (e) {
+    const selectedFontSize = fontSizeInput.property("value");
+    console.log("selectedFontSize", selectedFontSize);
+  });
+
   body.on("click", () => contextMenu.style("display", "none"));
 }

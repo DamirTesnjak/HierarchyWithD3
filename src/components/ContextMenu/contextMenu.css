@@ -1,7 +1,7 @@
 #context-menu {
     display: none;
     position: absolute;
-    width: 100px;
+    width: 220px;
     background: white;
     border: 1px solid #ccc;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -22,9 +22,21 @@
     background-color: #eee;
 }
 
-ul li:before {
-    content: '\2713';
+.button {
     display: inline-block;
-    color: #000;
-    padding: 0 6px 0 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-family: "Roboto";
+    font-size: 13px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #eee;
+}
+
+form {
+    display: flex;
+    justify-content: space-between;
 }
