@@ -6,7 +6,9 @@ import { getSumValueOfNode } from "./getSumValueOfNode";
 
 export function onClickNode({ d, actionRef, labelWidth, root, group }) {
   d.skip = actionRef.current.skip;
+  d.skipped = actionRef.current.skipped;
   d.invert = actionRef.current.invert;
+  d.inverted = actionRef.current.inverted;
 
   if (d.skip && !d.invert) {
     if (d.children) {
@@ -20,12 +22,11 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
           node: root,
         })
       );
-    } else {
-      d.store = 0;
-      d.inverted = false;
-      d.skipped = true;
-      d.dirty = true;
     }
+    d.store = 0;
+    d.inverted = false;
+    d.skipped = true;
+    d.dirty = true;
   }
 
   if (d.invert && !d.skip) {
@@ -40,12 +41,11 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
           node: root,
         })
       );
-    } else {
-      d.store = -d.data.value;
-      d.inverted = true;
-      d.skipped = false;
-      d.dirty = true;
     }
+    d.store = -d.data.value;
+    d.inverted = true;
+    d.skipped = false;
+    d.dirty = true;
   }
 
   if (!d.invert && !d.skip) {
@@ -60,12 +60,11 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
           node: root,
         })
       );
-    } else {
-      d.store = d.data.value;
-      d.inverted = false;
-      d.skipped = false;
-      d.dirty = true;
     }
+    d.store = d.data.value;
+    d.inverted = false;
+    d.skipped = false;
+    d.dirty = true;
   }
 
   group.selectAll("g").each(function (d) {
