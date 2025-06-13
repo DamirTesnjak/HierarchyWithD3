@@ -2,6 +2,7 @@ import { hierarchy, select } from "d3";
 import { useRef, useEffect, useCallback, useMemo } from "react";
 import { transformData } from "../../utils/transformData";
 import { getSumValueOfNode } from "../../utils/getSumValueOfNode";
+import { valueTextPosition } from "../../utils/valueTextPosition";
 import Toolbar from "../Toolbar";
 import { fontColor } from "../../utils/fontColor";
 
@@ -76,6 +77,7 @@ export function TreeView() {
     const nodes = root.descendants();
 
     const width = 250;
+    const labelWidth = 50;
     const height = nodes.length * nodeSize;
 
     svg
@@ -155,12 +157,7 @@ export function TreeView() {
         svg
           .selectAll("g")
           .selectAll(".value")
-          .attr(
-            "x",
-            (d) =>
-              svg.select(".label").node().getBBox().width +
-              (d.depth > 0 ? d.depth : 1) * 25
-          )
+          .attr("x", (d) => valueTextPosition(d, labelWidth))
           .attr("fill", (d) => fontColor(d))
           .text((d) => {
             return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
@@ -185,12 +182,7 @@ export function TreeView() {
       .append("text")
       .attr("class", "value")
       .attr("dy", "0.32em")
-      .attr(
-        "x",
-        (d) =>
-          svg.select(".label").node().getBBox().width +
-          (d.depth > 0 ? d.depth : 1) * 25
-      )
+      .attr("x", (d) => valueTextPosition(d, labelWidth))
       .attr("fill", (d) => fontColor(d))
       .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
       .text((d) => getSumValueOfNode(d).toFixed(2));
