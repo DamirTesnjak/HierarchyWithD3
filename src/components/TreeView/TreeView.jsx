@@ -54,7 +54,7 @@ export function TreeView() {
         onClickNode({ d, actionRef, labelWidth, root, group: svg });
       })
       .on("contextmenu", function (e, d) {
-        displayContextMenu(e, { d, actionRef, labelWidth, root, group: svg });
+        displayContextMenu(e, { d, labelWidth, root, group: svg });
       });
 
     node
@@ -129,7 +129,7 @@ export function TreeView() {
         marginTop: 10,
       }}
     >
-      <Toolbar toolbarProps={toolbarProps} actionStatuses={actionRef.current} />
+      <Toolbar toolbarProps={toolbarProps} />
       <ContextMenu />
       <div
         style={{

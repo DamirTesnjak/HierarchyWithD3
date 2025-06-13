@@ -15,22 +15,32 @@ export function displayContextMenu(e, args) {
 
   const body = select("body");
 
-  const { d, actionRef, labelWidth, root, group } = args;
+  const { d, labelWidth, root, group } = args;
 
   contextMenu
     .select("#skip")
     .style("font-weight", d.skipped ? "bold" : "normal")
     .on("click", function (e) {
-      actionRef.current = { invert: false, skip: true };
-      onClickNode({ d, actionRef, labelWidth, root, group });
+      const menuActionRef = {
+        current: {
+          invert: false,
+          skip: d.skipped ? false : true,
+        },
+      };
+      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
     });
 
   contextMenu
     .select("#invert")
     .style("font-weight", d.inverted ? "bold" : "normal")
     .on("click", function (e) {
-      actionRef.current = { invert: true, skip: false };
-      onClickNode({ d, actionRef, labelWidth, root, group });
+      const menuActionRef = {
+        current: {
+          invert: d.inverted ? false : true,
+          skip: false,
+        },
+      };
+      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
     });
 
   body.on("click", () => contextMenu.style("display", "none"));
