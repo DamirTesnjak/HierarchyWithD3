@@ -1,6 +1,7 @@
 #context-menu {
     display: none;
     position: absolute;
+    width: 100px;
     background: white;
     border: 1px solid #ccc;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -12,9 +13,18 @@
     list-style: none;
     padding: 5px 10px;
     cursor: pointer;
+    font-family: "Roboto";
+    font-size: 13px;
     text-align: left;
 }
 
 #context-menu li:hover {
     background-color: #eee;
+}
+
+ul li:before {
+    content: '\2713';
+    display: inline-block;
+    color: #000;
+    padding: 0 6px 0 0;
 }

@@ -39,7 +39,10 @@ export function TreeView() {
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-10, -15, width, height])
-      .attr("style", "max-width: 100%; height: auto; font: 15px sans-serif;");
+      .attr(
+        "style",
+        "max-width: 100%; height: auto; font-size: 13px; font-family: Roboto"
+      );
 
     const node = svg
       .selectAll("g")

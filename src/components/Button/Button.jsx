@@ -1,3 +1,5 @@
+import "./button.css";
+
 export default function Button(props) {
   const { text, type, onClick } = props;
 
