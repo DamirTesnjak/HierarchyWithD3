@@ -16,5 +16,5 @@ export function getSumValueOfNode(d, invert = false) {
 
     return sumChildren;
   }
-  return (d.invert ? -1 : 1) * d.data.value;
+  return d.store; //(d.invert ? -1 : 1) * d.data.value;
 }
