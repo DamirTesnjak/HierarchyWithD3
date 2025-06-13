@@ -54,7 +54,7 @@ export function TreeView() {
         onClickNode({ d, actionRef, labelWidth, root, group: svg });
       })
       .on("contextmenu", function (e, d) {
-        displayContextMenu(e);
+        displayContextMenu(e, { d, actionRef, labelWidth, root, group: svg });
       });
 
     node
