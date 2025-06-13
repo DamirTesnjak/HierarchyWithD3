@@ -78,6 +78,9 @@ export function TreeView() {
         d.inverted = false; // tag if value is inverted
         d.skipped = false; // tag if value is skipped
         d.dirty = false; // tag if value in node or leave is changed
+        d.fontBold = false;
+        d.fontItalic = 13;
+        d.fontColor = "#000";
       })(0)
     );
     const nodes = root.descendants();

@@ -56,39 +56,40 @@ export function displayContextMenu(e, args) {
   const fontSizeInput = fontSize.select("#ifontSize");
   const fontSizeApplyButton = fontSize.select("#applySizeButton");
 
-  fontStyleLabel.style("font-weight", d.bold || d.italic ? "bold" : "normal");
+  fontStyleLabel.style(
+    "font-weight",
+    d.fontBold || d.italic ? "bold" : "normal"
+  );
   fontStyleBoldButton
     .style("font-weight", d.bold ? "bold" : "normal")
     .on("click", function (e) {
-      console.log("bold");
+      d.fontBold = !d.fontBold;
     });
 
   fontStyleItalicButton
-    .style("font-weight", d.italic ? "bold" : "normal")
+    .style("font-weight", d.fontItalic ? "bold" : "normal")
     .on("click", function (e) {
-      console.log("italic");
+      d.fontItalic = !d.fontItalic;
     });
 
   fontColorLabel.style("font-weight", d.color ? "bold" : "normal");
 
   fontColorButton.on("click", function (e) {
     e.stopPropagation();
-    console.log("fontColor");
   });
 
   fontColorApplyButton.on("click", function (e) {
     const selectedFontColor = fontColorButton.property("value");
-    console.log("selectedFontColor", selectedFontColor);
+    d.fontColor = selectedFontColor;
   });
 
   fontSizeInput.on("click", function (e) {
     e.stopPropagation();
-    console.log("fontSizeInput");
   });
 
   fontSizeApplyButton.on("click", function (e) {
     const selectedFontSize = fontSizeInput.property("value");
-    console.log("selectedFontSize", selectedFontSize);
+    d.fontSize = selectedFontSize;
   });
 
   body.on("click", () => contextMenu.style("display", "none"));
