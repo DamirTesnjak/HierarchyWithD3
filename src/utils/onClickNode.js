@@ -68,25 +68,29 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
     }
   }
 
-  const nodes = group.selectAll("g");
-  const texts = nodes.selectAll("text");
-  const labels = nodes.selectAll(".label");
-  const values = nodes.selectAll(".value");
-
   group.selectAll("g").each(function (d) {
+    // select current node
     const node = select(this);
 
+    // maintain structure, by selecting, the function will render the element
+    const label = node.select(".label");
+    const value = node.select(".value");
+    value.text((d) => {
+      return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
+    });
+
+    // make changes only to those elements that their values are changed
     if (d.dirty) {
       node.style("text-decoration", (d) => {
         return d.skipped ? "line-through" : "none";
       });
 
-      node
+      label
         .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
         .attr("fill", (d) => fontColor(d))
         .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
 
-      node
+      value
         .attr("x", (d) => valueTextPosition(d, labelWidth))
         .attr("fill", (d) => fontColor(d))
         .text((d) => {
