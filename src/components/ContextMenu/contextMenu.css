@@ -1,0 +1,47 @@
+#context-menu {
+    display: none;
+    position: absolute;
+    width: 260px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    z-index: 1000;
+}
+
+#context-menu li {
+    list-style: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: "Roboto";
+    font-size: 13px;
+    text-align: left;
+}
+
+#context-menu li:hover {
+    background-color: #eee;
+}
+
+.button {
+    display: inline-block;
+    background-color: white;
+    min-width: 50px;
+    border: 1px solid #ccc;
+    padding: 5px 10px 5px 10px;
+    font-family: "Roboto";
+    font-size: 13px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #eee;
+}
+
+form {
+    display: flex;
+    justify-content: space-between;
+}
+
+label {
+    width: 100px;
+}
