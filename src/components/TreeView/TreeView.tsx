@@ -1,4 +1,4 @@
-import { hierarchy, select } from "d3";
+import { hierarchy, HierarchyNode, select } from "d3";
 import { useRef, useEffect, useCallback, useMemo } from "react";
 
 import { transformData } from "../../utils/transformData";
@@ -11,7 +11,7 @@ import { displayContextMenu } from "../../utils/displayContextMenu";
 import Toolbar from "../Toolbar/Toolbar";
 import jsonData from "../../data/random_nested_tree_10000_leaves";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
-import { Inode } from "./type";
+import { INode } from "./type";
 
 export function TreeView() {
   const data = useMemo(
@@ -73,15 +73,16 @@ export function TreeView() {
       // for each node and decendandt in pre-order traversal we add am index value,
       // starting with the 0
       ((i) => (d) => {
-        d.index = i++;
-        d.store = d.data.value; // store the values for leaves
-        d.inverted = false; // tag if value is inverted
-        d.skipped = false; // tag if value is skipped
-        d.dirty = false; // tag if value in node or leave is changed
-        d.fontSize = "13px";
-        d.fontBold = d.children;
-        d.fontItalic = false;
-        d.fontColor = "#000";
+        const node = d as INode;
+        node.index = i++;
+        node.store = d.data.value; // store the values for leaves
+        node.inverted = false; // tag if value is inverted
+        node.skipped = false; // tag if value is skipped
+        node.dirty = false; // tag if value in node or leave is changed
+        node.fontSize = "13px";
+        node.fontBold = d.children ? true : false;
+        node.fontItalic = false;
+        node.fontColor = "#000";
       })(0)
     );
     const nodes = root.descendants();
@@ -100,48 +101,47 @@ export function TreeView() {
       .selectAll("g")
       .data(nodes)
       .join("g")
-      .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
+      .attr("transform", (d: INode) => `translate(0,${d.index * nodeSize})`)
       .style("cursor", "pointer")
-      .on("click", function (e, d) {
+      .on("click", function (e, d: INode) {
         onClickNode({
           d,
           actionRef,
-          labelWidth,
           root,
           group: svg,
           checkChildren: d.children,
         });
       })
-      .on("contextmenu", function (e, d) {
-        displayContextMenu(e, { d, actionRef, labelWidth, root, group: svg });
+      .on("contextmenu", function (e, d: INode) {
+        displayContextMenu(e, { d, actionRef, root, group: svg });
       });
 
     node
       .append("circle")
       .attr("r", 2.5)
-      .attr("fill", (d) => (d.children ? "black" : "#999"));
+      .attr("fill", (d: INode) => (d.children ? "black" : "#999"));
 
     node // display label
       .append("text")
       .attr("class", "label")
       .attr("dy", "0.32em")
-      .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
-      .attr("fill", (d) => fontColor(d))
-      .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
-      .attr("font-size", (d) => d.fontSize)
-      .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
-      .text((d) => d.data.name);
+      .attr("x", (d: INode) => 10 * (d.depth > 0 ? d.depth : 1))
+      .attr("fill", (d: INode) => fontColor(d))
+      .attr("font-weight", (d: INode) => (d.children ? "bold" : "normal"))
+      .attr("font-size", (d: INode) => d.fontSize)
+      .attr("font-style", (d: INode) => (d.fontItalic ? "italic" : "normal"))
+      .text((d: INode) => d.data.name);
 
     node // display value
       .append("text")
       .attr("class", "value")
       .attr("dy", "0.32em")
-      .attr("x", (d) => valueTextPosition(d, labelWidth))
-      .attr("fill", (d) => fontColor(d))
-      .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
-      .attr("font-size", (d) => d.fontSize)
-      .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
-      .text((d) => getSumValueOfNode(d).toFixed(2));
+      .attr("x", (d: INode) => valueTextPosition(d))
+      .attr("fill", (d: INode) => fontColor(d))
+      .attr("font-weight", (d: INode) => (d.children ? "bold" : "normal"))
+      .attr("font-size", (d: INode) => d.fontSize)
+      .attr("font-style", (d: INode) => (d.fontItalic ? "italic" : "normal"))
+      .text((d: INode) => getSumValueOfNode(d).toFixed(2));
 
     const bbox = node.node().getBBox();
 
@@ -155,7 +155,7 @@ export function TreeView() {
       .attr("stroke", "#ccc");
   }, []);
 
-  const svgRef = useRef();
+  const svgRef = useRef(null);
   const actionRef = useRef({ skip: false, invert: false });
 
   useEffect(() => {

@@ -1,7 +1,17 @@
 import { select } from "d3";
-import { onClickNode } from "./onClickNode";
+import { IonClickNode, onClickNode } from "./onClickNode";
+import { INode } from "components/TreeView/type";
 
-export function displayContextMenu(e, args) {
+
+
+type Args = {
+  d: IonClickNode["d"];
+  actionRef: IonClickNode["actionRef"];
+  root: IonClickNode["root"];
+  group: IonClickNode["group"];
+}
+
+export function displayContextMenu(e: any, args: Args) {
   e.preventDefault(); // Prevent default browser context menu
 
   const contextMenu = select("#context-menu");
@@ -15,7 +25,7 @@ export function displayContextMenu(e, args) {
 
   const body = select("body");
 
-  const { d, labelWidth, root, group } = args;
+  const { d, root, group } = args;
 
   contextMenu
     .select("#skip")
@@ -30,7 +40,6 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
         checkChildren: true,
@@ -51,10 +60,9 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
-        checkChildren: d.children,
+        checkChildren: d.children ? true : false,
       });
 
       const ancestors = d.ancestors();
@@ -63,20 +71,20 @@ export function displayContextMenu(e, args) {
         const parent = d;
         const parentLeaves = parent.leaves();
         const parentLeavesLengthInvertedValues = parentLeaves.filter(
-          (d) => d.inverted
+          (d: INode) => d.inverted
         );
 
         if (parentLeaves.length === parentLeavesLengthInvertedValues.length) {
           menuActionRef = {
             current: {
-              ...menuActionRef.current.skip,
+              skip: d.skipped ? false : true,
               invert: true,
             },
           };
         } else {
           menuActionRef = {
             current: {
-              ...menuActionRef.current.skip,
+              skip: d.skipped ? false : true,
               invert: false,
             },
           };
@@ -85,7 +93,6 @@ export function displayContextMenu(e, args) {
         onClickNode({
           d: parent,
           actionRef: menuActionRef,
-          labelWidth,
           root,
           group,
           checkChildren: false,
@@ -124,7 +131,6 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
         checkChildren: false,
@@ -147,7 +153,6 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
         checkChildren: false,
@@ -172,7 +177,6 @@ export function displayContextMenu(e, args) {
     onClickNode({
       d,
       actionRef: menuActionRef,
-      labelWidth,
       root,
       group,
       checkChildren: false,
@@ -195,7 +199,6 @@ export function displayContextMenu(e, args) {
     onClickNode({
       d,
       actionRef: menuActionRef,
-      labelWidth,
       root,
       group,
       checkChildren: false,

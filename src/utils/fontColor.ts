@@ -1,4 +1,6 @@
-export function fontColor(d) {
+import { INode } from "components/TreeView/type";
+
+export function fontColor(d: INode) {
   if (d.inverted) {
     return "red";
   }

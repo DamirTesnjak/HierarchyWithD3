@@ -3,19 +3,26 @@ import { setChildNodesValues } from "./setChildValues";
 import { fontColor } from "./fontColor";
 import { valueTextPosition } from "./valueTextPosition";
 import { getSumValueOfNode } from "./getSumValueOfNode";
+import { INode } from "components/TreeView/type";
+import { ActionRef } from "./types";
+
+export type IonClickNode = {
+  d: INode;
+  actionRef: ActionRef;
+  root: INode;
+  group: any;
+  checkChildren: boolean;
+}
 
 export function onClickNode({
   d,
   actionRef,
-  labelWidth,
   root,
   group,
   checkChildren,
-}) {
+}: IonClickNode) {
   d.skip = actionRef.current.skip;
-  d.skipped = actionRef.current.skipped;
   d.invert = actionRef.current.invert;
-  d.inverted = actionRef.current.inverted;
 
   const descendants = d.descendants();
 
@@ -76,7 +83,7 @@ export function onClickNode({
     d.dirty = true;
   }
 
-  group.selectAll("g").each(function (d) {
+  group.selectAll("g").each(function (d: INode) {
     // select current node
     const node = select(this);
 
@@ -84,31 +91,67 @@ export function onClickNode({
     const label = node.select(".label");
     const value = node.select(".value");
     value.text((d) => {
-      return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
+      const node = d as INode;
+      return getSumValueOfNode(node, actionRef.current.invert).toFixed(2);
     });
 
     // make changes only to those elements that their values are changed
     if (d.dirty) {
       node.style("text-decoration", (d) => {
-        return d.skipped ? "line-through" : "none";
+        const node = d as INode;
+        return node.skipped ? "line-through" : "none";
       });
 
       label
-        .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
-        .attr("fill", (d) => fontColor(d))
-        .attr("font-size", (d) => d.fontSize)
-        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
-        .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
-        .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
+        .attr("x", (d) => {
+          const node = d as INode;
+          return 10 * (node.depth > 0 ? node.depth : 1)
+        })
+        .attr("fill", (d) => {
+          const node = d as INode;
+          return fontColor(node)
+        })
+        .attr("font-size", (d) => {
+          const node = d as INode;
+          return node.fontSize
+        })
+        .attr("font-weight", (d) => {
+          const node = d as INode;
+          return node.fontBold ? "bold" : "normal"
+        })
+        .attr("font-style", (d) => {
+          const node = d as INode;
+          return node.fontItalic ? "italic" : "normal"
+        })
+        .text((d) => {
+          const node = d as INode;
+          return node.inverted ? `-${node.data.name}` : node.data.name
+        });
 
       value
-        .attr("x", (d) => valueTextPosition(d, labelWidth))
-        .attr("fill", (d) => fontColor(d))
-        .attr("font-size", (d) => d.fontSize)
-        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
-        .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
+        .attr("x", (d) => {
+          const node = d as INode;
+          return valueTextPosition(node)
+        })
+        .attr("fill", (d) => {
+          const node = d as INode;
+          return fontColor(node)
+        })
+        .attr("font-size", (d) => {
+          const node = d as INode;
+          return node.fontSize
+        })
+        .attr("font-weight", (d) => {
+          const node = d as INode;
+          return node.fontBold ? "bold" : "normal"
+        })
+        .attr("font-style", (d) => {
+          const node = d as INode;
+          return node.fontItalic ? "italic" : "normal"
+        })
         .text((d) => {
-          return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
+          const node = d as INode;
+          return getSumValueOfNode(node, actionRef.current.invert).toFixed(2);
         });
     }
 
