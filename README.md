@@ -1,70 +1,109 @@
-# Getting Started with Create React App
+# Hierarchical display of data React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Installation
 
-In the project directory, you can run:
+git clone https://github.com/DamirTesnjak/HierarchyWithD3/tree/main
+
+Then run in the terminal:
+
+> npm install
+
+to install necessary libraries.
+
+## Usage
 
 ### `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### App flow
 
-### `npm test`
+This app displays the RAW data. The RAW data has the following structure:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Example:
 
-### `npm run build`
+```
+{
+      Hierarchy: [
+        {
+          Q3: [
+            {
+              Jul: 113.4,
+            },
+            {
+              Aug: 46.4,
+            },
+            {
+              Sep: 42.7,
+            },
+          ],
+        },
+        {
+          Q4: [
+            {
+              Oct: 115.5,
+            },
+            {
+              Nov: 24.8,
+            },
+            {
+              Dec: [
+                {
+                  "01": 115.5,
+                },
+                {
+                  "02": 24.8,
+                },
+                {
+                  "03": [
+                    {
+                      "01:00": 115.5,
+                    },
+                    {
+                      "02:00": 24.8,
+                    },
+                    {
+                      "03:00": 97.2,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+When using this app, you can edit rows via toolbar (buttons: `Skip`, `Invert`), or by right-clicking on a data row to open the context menu.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+From the context menu, for each row you can:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Skip the record
 
-### `npm run eject`
+- Invert the value of the record
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Change font style: bold, italic
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Change font color
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Change font size
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Note:
 
-## Learn More
+- When changing the font color or size, you must click the appropriate buttons in the context menu to apply the changes.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Inverting a value will change the font color to red. After that, it won't be possible to change the color, since negative values must stand out (my own artistic license 😄). Otherwise, custom coloring will be displayed.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- If all subset values of a parent are inverted, the parent value will automatically be inverted and its color changed to red.
 
-### Code Splitting
+- Changing the display (invert, skip) from the context menu may take longer, since the code must check parent values and update them if necessary. The processing time depends on how deeply nested the affected data is. "For approximately 13,000 records, processing can take 3–4 seconds if all records are being processed and the action is triggered from the main parent."
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- The display is scrollable
 
-### Analyzing the Bundle Size
+## The app was tested on Windoes machine
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Browser: Firefox 139.0.4
