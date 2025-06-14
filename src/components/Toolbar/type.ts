@@ -1,5 +1,4 @@
 type IAction = {
-    buttonType: "submit" | "reset" | "button";
     action: () => {
         invert: boolean;
         skip: boolean;

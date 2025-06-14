@@ -12,7 +12,6 @@ export default function Toolbar(props: IToolbar) {
     <div>
       <Button
         text={actionsTriggered.skip ? "Skip: on" : "Skip: off"}
-        type={toolbarProps.skip.buttonType}
         skip={actionsTriggered.skip}
         onClick={() => {
           toolbarProps.skip.action();
@@ -24,7 +23,6 @@ export default function Toolbar(props: IToolbar) {
       />
       <Button
         text={actionsTriggered.invert ? "Invert: on" : "Invert: off"}
-        type={toolbarProps.invert.buttonType}
         invert={actionsTriggered.invert}
         onClick={() => {
           toolbarProps.invert.action();

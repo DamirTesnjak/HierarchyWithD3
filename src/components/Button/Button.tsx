@@ -1,12 +1,12 @@
 import "./button.css";
 
 export default function Button(props: IButton) {
-  const { text, type, skip, invert, onClick } = props;
+  const { text, skip, invert, onClick } = props;
 
   return (
     <button
       style={{ fontWeight: skip || invert ? 500 : 300 }}
-      type={type}
+      type="button"
       onClick={onClick}
     >
       {text}

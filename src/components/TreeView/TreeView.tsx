@@ -173,12 +173,10 @@ export function TreeView() {
 
   const toolbarProps = {
     skip: {
-      buttonType: "button",
       action: () =>
         (actionRef.current = { invert: false, skip: !actionRef.current.skip }),
     },
     invert: {
-      buttonType: "button",
       action: () =>
       (actionRef.current = {
         skip: false,
