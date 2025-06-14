@@ -110,7 +110,6 @@ export function displayContextMenu(e, args) {
 
   fontSizeApplyButton.on("click", function (e) {
     const selectedFontSize = fontSizeInput.property("value");
-    console.log("selectedFontSize", selectedFontSize);
     const menuActionRef = {
       current: {
         invert: d.inverted,
