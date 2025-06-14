@@ -77,14 +77,16 @@ export function displayContextMenu(e: any, args: Args) {
         if (parentLeaves.length === parentLeavesLengthInvertedValues.length) {
           menuActionRef = {
             current: {
-              skip: d.skipped ? false : true,
+              // @ts-ignore
+              ...menuActionRef.current.skip,
               invert: true,
             },
           };
         } else {
           menuActionRef = {
             current: {
-              skip: d.skipped ? false : true,
+              // @ts-ignore
+              ...menuActionRef.current.skip,
               invert: false,
             },
           };
