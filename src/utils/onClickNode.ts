@@ -85,6 +85,7 @@ export function onClickNode({
 
   group.selectAll("g").each(function (d: INode) {
     // select current node
+    // @ts-ignore
     const node = select(this);
 
     // maintain structure, by selecting, the function will render the element
