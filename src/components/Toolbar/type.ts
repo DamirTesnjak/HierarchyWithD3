@@ -1,6 +1,9 @@
 type IAction = {
-    buttonType: IButton["type"];
-    action: () => {};
+    buttonType: "submit" | "reset" | "button";
+    action: () => {
+        invert: boolean;
+        skip: boolean;
+    };
 }
 
 interface IToolbar {

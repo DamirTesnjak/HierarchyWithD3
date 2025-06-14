@@ -1,4 +1,4 @@
-import { hierarchy, HierarchyNode, select } from "d3";
+import { hierarchy, select } from "d3";
 import { useRef, useEffect, useCallback, useMemo } from "react";
 
 import { transformData } from "../../utils/transformData";
@@ -9,7 +9,7 @@ import { onClickNode } from "../../utils/onClickNode";
 import { displayContextMenu } from "../../utils/displayContextMenu";
 
 import Toolbar from "../Toolbar/Toolbar";
-import jsonData from "../../data/random_nested_tree_10000_leaves";
+// import jsonData from "../../data/random_nested_tree_10000_leaves";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { INode } from "./type";
 
@@ -67,7 +67,7 @@ export function TreeView() {
     }),
     []
   );
-  const drawHierarchicalStructure = useCallback((data, svg) => {
+  const drawHierarchicalStructure = useCallback((data: any, svg: any) => {
     const nodeSize = 25;
     const root = hierarchy(data).eachBefore(
       // for each node and decendandt in pre-order traversal we add am index value,
@@ -88,7 +88,6 @@ export function TreeView() {
     const nodes = root.descendants();
 
     const width = 250;
-    const labelWidth = 50;
     const height = nodes.length * nodeSize;
 
     svg
@@ -103,17 +102,19 @@ export function TreeView() {
       .join("g")
       .attr("transform", (d: INode) => `translate(0,${d.index * nodeSize})`)
       .style("cursor", "pointer")
-      .on("click", function (e, d: INode) {
+      .on("click", function (e: any, d: INode) {
+        const mainRoot = root as INode
         onClickNode({
           d,
           actionRef,
-          root,
+          root: mainRoot,
           group: svg,
-          checkChildren: d.children,
+          checkChildren: d.children ? true : false,
         });
       })
-      .on("contextmenu", function (e, d: INode) {
-        displayContextMenu(e, { d, actionRef, root, group: svg });
+      .on("contextmenu", function (e: any, d: INode) {
+        const mainRoot = root as INode
+        displayContextMenu(e, { d, actionRef, root: mainRoot, group: svg });
       });
 
     node
