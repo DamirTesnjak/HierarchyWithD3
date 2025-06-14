@@ -108,10 +108,11 @@ export function displayContextMenu(e, args) {
 
   fontStyleLabel.style(
     "font-weight",
-    d.fontBold || d.italic ? "bold" : "normal"
+    d.fontBold || d.fontItalic ? "bold" : "normal"
   );
   fontStyleBoldButton
-    .style("font-weight", d.bold ? "bold" : "normal")
+    .style("font-weight", d.fontBold ? "bold" : "normal")
+    .style("background-color", d.fontBold ? "#99ccff" : "#fff")
     .on("click", function (e) {
       const menuActionRef = {
         current: {
@@ -132,6 +133,8 @@ export function displayContextMenu(e, args) {
 
   fontStyleItalicButton
     .style("font-weight", d.fontItalic ? "bold" : "normal")
+    .style("background-color", d.fontItalic ? "#99ccff" : "#fff")
+
     .on("click", function (e) {
       const menuActionRef = {
         current: {

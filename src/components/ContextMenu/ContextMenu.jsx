@@ -7,7 +7,9 @@ export function ContextMenu() {
       <li id="invert">Invert</li>
       <li id="fontStyle">
         <form>
-          <label htmlFor="fontStyle">Font style</label>
+          <label id="label" htmlFor="fontStyle">
+            Font style
+          </label>
           <div>
             <input id="bold" className="button" type="button" value="B" />
             <input id="italic" className="button" type="button" value="I" />
