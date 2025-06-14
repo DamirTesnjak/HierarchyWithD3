@@ -70,19 +70,17 @@ export function TreeView() {
   const drawHierarchicalStructure = useCallback((data: any, svg: any) => {
     const nodeSize = 25;
     const root = hierarchy(data).eachBefore(
-      // for each node and decendandt in pre-order traversal we add am index value,
-      // starting with the 0
       ((i) => (d) => {
-        const node = d as INode;
-        node.index = i++;
-        node.store = d.data.value; // store the values for leaves
-        node.inverted = false; // tag if value is inverted
-        node.skipped = false; // tag if value is skipped
-        node.dirty = false; // tag if value in node or leave is changed
-        node.fontSize = "13px";
-        node.fontBold = d.children ? true : false;
-        node.fontItalic = false;
-        node.fontColor = "#000";
+        const dn = d as INode;
+        dn.index = i++;
+        dn.store = d.data.value; // store the values for descendants
+        dn.inverted = false; // tag if value is inverted
+        dn.skipped = false; // tag if value is skipped
+        dn.dirty = false; // tag if value in node or leave is changed
+        dn.fontSize = "13px";
+        dn.fontBold = d.children ? true : false;
+        dn.fontItalic = false;
+        dn.fontColor = "#000";
       })(0)
     );
     const nodes = root.descendants();
@@ -96,7 +94,7 @@ export function TreeView() {
       .attr("viewBox", [-10, -15, width, height])
       .attr("style", "max-width: 100%; height: auto; font-family: Roboto");
 
-    const node = svg
+    const group = svg
       .selectAll("g")
       .data(nodes)
       .join("g")
@@ -117,12 +115,12 @@ export function TreeView() {
         displayContextMenu(e, { d, actionRef, root: mainRoot, group: svg });
       });
 
-    node
+    group
       .append("circle")
       .attr("r", 2.5)
       .attr("fill", (d: INode) => (d.children ? "black" : "#999"));
 
-    node // display label
+    group // display label
       .append("text")
       .attr("class", "label")
       .attr("dy", "0.32em")
@@ -133,7 +131,7 @@ export function TreeView() {
       .attr("font-style", (d: INode) => (d.fontItalic ? "italic" : "normal"))
       .text((d: INode) => d.data.name);
 
-    node // display value
+    group // display value
       .append("text")
       .attr("class", "value")
       .attr("dy", "0.32em")
@@ -144,9 +142,9 @@ export function TreeView() {
       .attr("font-style", (d: INode) => (d.fontItalic ? "italic" : "normal"))
       .text((d: INode) => getSumValueOfNode(d).toFixed(2));
 
-    const bbox = node.node().getBBox();
+    const bbox = group.node().getBBox();
 
-    node
+    group
       .insert("rect", ":first-child")
       .attr("x", bbox.x - 5)
       .attr("y", bbox.y - 4)

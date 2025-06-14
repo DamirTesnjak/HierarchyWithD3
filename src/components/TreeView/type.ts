@@ -1,9 +1,5 @@
 import { HierarchyNode } from "d3";
 
-type NodeValue = {
-    name: string;
-    value: number;
-}
 export interface INode extends HierarchyNode<any> {
     index: number;
     store: number;

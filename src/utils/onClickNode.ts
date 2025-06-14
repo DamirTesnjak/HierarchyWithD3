@@ -21,8 +21,8 @@ export function onClickNode({
   group,
   checkChildren,
 }: IonClickNode) {
-  d.skip = actionRef.current.skip;
-  d.invert = actionRef.current.invert;
+  d.skip = actionRef.current.skip; // editing mode set to "skip values" from toolbar
+  d.invert = actionRef.current.invert; // editing mode set to "invert values" from toolbar
 
   const descendants = d.descendants();
 
@@ -88,71 +88,71 @@ export function onClickNode({
     // @ts-ignore
     const node = select(this);
 
-    // maintain structure, by selecting, the function will render the element
+    // maintain structure by selecting, the function will render the element
     const label = node.select(".label");
     const value = node.select(".value");
     value.text((d) => {
-      const node = d as INode;
-      return getSumValueOfNode(node, actionRef.current.invert).toFixed(2);
+      const dn = d as INode;
+      return getSumValueOfNode(dn, actionRef.current.invert).toFixed(2);
     });
 
     // make changes only to those elements that their values are changed
     if (d.dirty) {
       node.style("text-decoration", (d) => {
-        const node = d as INode;
-        return node.skipped ? "line-through" : "none";
+        const dn = d as INode;
+        return dn.skipped ? "line-through" : "none";
       });
 
       label
         .attr("x", (d) => {
-          const node = d as INode;
-          return 10 * (node.depth > 0 ? node.depth : 1)
+          const dn = d as INode;
+          return 10 * (dn.depth > 0 ? dn.depth : 1)
         })
         .attr("fill", (d) => {
-          const node = d as INode;
-          return fontColor(node)
+          const dn = d as INode;
+          return fontColor(dn)
         })
         .attr("font-size", (d) => {
-          const node = d as INode;
-          return node.fontSize
+          const dn = d as INode;
+          return dn.fontSize
         })
         .attr("font-weight", (d) => {
-          const node = d as INode;
-          return node.fontBold ? "bold" : "normal"
+          const dn = d as INode;
+          return dn.fontBold ? "bold" : "normal"
         })
         .attr("font-style", (d) => {
-          const node = d as INode;
-          return node.fontItalic ? "italic" : "normal"
+          const dn = d as INode;
+          return dn.fontItalic ? "italic" : "normal"
         })
         .text((d) => {
-          const node = d as INode;
-          return node.inverted ? `-${node.data.name}` : node.data.name
+          const dn = d as INode;
+          return dn.inverted ? `-${dn.data.name}` : dn.data.name
         });
 
       value
         .attr("x", (d) => {
-          const node = d as INode;
-          return valueTextPosition(node)
+          const dn = d as INode;
+          return valueTextPosition(dn)
         })
         .attr("fill", (d) => {
-          const node = d as INode;
-          return fontColor(node)
+          const dn = d as INode;
+          return fontColor(dn)
         })
         .attr("font-size", (d) => {
-          const node = d as INode;
-          return node.fontSize
+          const dn = d as INode;
+          return dn.fontSize
         })
         .attr("font-weight", (d) => {
-          const node = d as INode;
-          return node.fontBold ? "bold" : "normal"
+          const dn = d as INode;
+          return dn.fontBold ? "bold" : "normal"
         })
         .attr("font-style", (d) => {
-          const node = d as INode;
-          return node.fontItalic ? "italic" : "normal"
+          const dn = d as INode;
+          return dn.fontItalic ? "italic" : "normal"
         })
         .text((d) => {
-          const node = d as INode;
-          return getSumValueOfNode(node, actionRef.current.invert).toFixed(2);
+          const dn = d as INode;
+          return getSumValueOfNode(dn, actionRef.current.invert).toFixed(2);
         });
     }
 

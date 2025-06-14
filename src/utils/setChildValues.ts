@@ -17,9 +17,10 @@ export function setChildNodesValues({
   dirty,
   node,
 }: IsetChildNodesValues) {
-  const cNode = node.find((d) => d.index === child.index)!;
-  cNode.store = storeValue;
-  cNode.inverted = inverted;
-  cNode.skipped = skipped;
-  cNode.dirty = dirty;
+
+  const dn = node.find((d) => d.index === child.index)!;
+  dn.store = storeValue;
+  dn.inverted = inverted;
+  dn.skipped = skipped;
+  dn.dirty = dirty;
 }

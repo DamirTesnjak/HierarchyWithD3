@@ -12,7 +12,7 @@ type Args = {
 }
 
 export function displayContextMenu(e: any, args: Args) {
-  e.preventDefault(); // Prevent default browser context menu
+  e.preventDefault(); // Prevents default browser context menu
 
   const contextMenu = select("#context-menu");
 
