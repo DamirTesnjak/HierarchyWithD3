@@ -9,13 +9,13 @@ import { onClickNode } from "../../utils/onClickNode";
 import { displayContextMenu } from "../../utils/displayContextMenu";
 
 import Toolbar from "../Toolbar/Toolbar";
-// import jsonData from "../../data/random_nested_tree_10000_leaves";
+import jsonData from "../../data/random_nested_tree_10000_leaves.json";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { INode } from "./type";
 
 export function TreeView() {
   const data = useMemo(
-    () => ({
+    () => (jsonData /*{
       Hierarchy: [
         {
           Q3: [
@@ -64,7 +64,7 @@ export function TreeView() {
           ],
         },
       ],
-    }),
+    }*/),
     []
   );
   const drawHierarchicalStructure = useCallback((data: any, svg: any) => {
