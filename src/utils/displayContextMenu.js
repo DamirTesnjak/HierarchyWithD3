@@ -33,7 +33,7 @@ export function displayContextMenu(e, args) {
         labelWidth,
         root,
         group,
-        checkChildren: false,
+        checkChildren: true,
       });
     });
 
@@ -41,7 +41,7 @@ export function displayContextMenu(e, args) {
     .select("#invert")
     .style("font-weight", d.inverted ? "bold" : "normal")
     .on("click", function (e) {
-      const menuActionRef = {
+      let menuActionRef = {
         current: {
           invert: d.inverted ? false : true,
           skip: false,
@@ -58,34 +58,39 @@ export function displayContextMenu(e, args) {
       });
 
       const ancestors = d.ancestors();
-      const parent = ancestors[1] ? ancestors[1] : d;
-      const parentLeaves = parent.leaves();
-      const parentLeavesLengthInvertedValues = parentLeaves.filter(
-        (d) => d.inverted
-      );
 
-      console.log("parentLeaves", parentLeaves.length);
-      console.log(
-        "parentLeavesLengthInvertedValues",
-        parentLeavesLengthInvertedValues.length
-      );
+      ancestors.forEach((d) => {
+        const parent = d;
+        const parentLeaves = parent.leaves();
+        const parentLeavesLengthInvertedValues = parentLeaves.filter(
+          (d) => d.inverted
+        );
 
-      if (parentLeaves.length === parentLeavesLengthInvertedValues.length) {
-        console.log("test");
-        parent.inverted = true;
-      } else {
-        parent.inverted = false;
-      }
-      onClickNode({
-        d: parent,
-        actionRef: menuActionRef,
-        labelWidth,
-        root,
-        group,
-        checkChildren: false,
+        if (parentLeaves.length === parentLeavesLengthInvertedValues.length) {
+          menuActionRef = {
+            current: {
+              ...menuActionRef.current.skip,
+              invert: true,
+            },
+          };
+        } else {
+          menuActionRef = {
+            current: {
+              ...menuActionRef.current.skip,
+              invert: false,
+            },
+          };
+        }
+
+        onClickNode({
+          d: parent,
+          actionRef: menuActionRef,
+          labelWidth,
+          root,
+          group,
+          checkChildren: false,
+        });
       });
-
-      console.log("p2", parent);
     });
 
   const fontStyle = contextMenu.select("#fontStyle");

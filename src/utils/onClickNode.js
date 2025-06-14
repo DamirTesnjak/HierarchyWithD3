@@ -17,11 +17,11 @@ export function onClickNode({
   d.invert = actionRef.current.invert;
   d.inverted = actionRef.current.inverted;
 
-  const leaves = d.leaves();
+  const descendants = d.descendants();
 
   if (d.skip && !d.invert) {
     if (d.children && checkChildren) {
-      leaves.forEach((c) =>
+      descendants.forEach((c) =>
         setChildNodesValues({
           child: c,
           storeValue: 0,
@@ -40,7 +40,7 @@ export function onClickNode({
 
   if (d.invert && !d.skip) {
     if (d.children && checkChildren) {
-      d.leaves().forEach((c) =>
+      descendants.forEach((c) =>
         setChildNodesValues({
           child: c,
           storeValue: -c.data.value,
@@ -59,7 +59,7 @@ export function onClickNode({
 
   if (!d.invert && !d.skip) {
     if (d.children && checkChildren) {
-      d.leaves().forEach((c) =>
+      descendants.forEach((c) =>
         setChildNodesValues({
           child: c,
           storeValue: c.data.value,
