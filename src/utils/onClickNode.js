@@ -88,7 +88,9 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
         .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
         .attr("fill", (d) => fontColor(d))
         .attr("font-size", (d) => d.fontSize)
-        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
+        .attr("font-weight", (d) =>
+          d.fontBold || d.children ? "bold" : "normal"
+        )
         .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
         .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
 
@@ -96,7 +98,9 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
         .attr("x", (d) => valueTextPosition(d, labelWidth))
         .attr("fill", (d) => fontColor(d))
         .attr("font-size", (d) => d.fontSize)
-        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
+        .attr("font-weight", (d) =>
+          d.fontBold || d.children ? "bold" : "normal"
+        )
         .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
         .text((d) => {
           return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
