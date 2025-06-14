@@ -1,4 +1,4 @@
-export function transformData(obj, keyName = "hierarchy") {
+export function transformData(obj: any): any {
   // for object we get entries [key, value]
   const entries = Object.entries(obj);
 

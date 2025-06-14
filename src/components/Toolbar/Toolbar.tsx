@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Button from "./Button/Button";
+import Button from "../Button/Button";
 
-export default function Toolbar(props) {
+export default function Toolbar(props: IToolbar) {
   const { toolbarProps } = props;
   const [actionsTriggered, setActionsTriggered] = useState({
     skip: false,
@@ -12,7 +12,6 @@ export default function Toolbar(props) {
     <div>
       <Button
         text={actionsTriggered.skip ? "Skip: on" : "Skip: off"}
-        type={toolbarProps.skip.buttonType}
         skip={actionsTriggered.skip}
         onClick={() => {
           toolbarProps.skip.action();
@@ -24,7 +23,6 @@ export default function Toolbar(props) {
       />
       <Button
         text={actionsTriggered.invert ? "Invert: on" : "Invert: off"}
-        type={toolbarProps.invert.buttonType}
         invert={actionsTriggered.invert}
         onClick={() => {
           toolbarProps.invert.action();

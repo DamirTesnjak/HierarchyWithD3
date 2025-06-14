@@ -1,7 +1,7 @@
 #context-menu {
     display: none;
     position: absolute;
-    width: 220px;
+    width: 260px;
     background: white;
     border: 1px solid #ccc;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -25,8 +25,9 @@
 .button {
     display: inline-block;
     background-color: white;
+    min-width: 50px;
     border: 1px solid #ccc;
-    padding: 5px;
+    padding: 5px 10px 5px 10px;
     font-family: "Roboto";
     font-size: 13px;
     text-align: center;
@@ -39,4 +40,8 @@
 form {
     display: flex;
     justify-content: space-between;
+}
+
+label {
+    width: 100px;
 }

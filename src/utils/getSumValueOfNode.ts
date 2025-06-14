@@ -1,4 +1,6 @@
-export function getSumValueOfNode(d, invert = false) {
+import { INode } from "components/TreeView/type";
+
+export function getSumValueOfNode(d: INode, invert = false) {
   if (d.children) {
     let childrenStoredValues = d
       .leaves()

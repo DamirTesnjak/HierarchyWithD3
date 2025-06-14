@@ -1,8 +1,18 @@
 import { select } from "d3";
-import { onClickNode } from "./onClickNode";
+import { IonClickNode, onClickNode } from "./onClickNode";
+import { INode } from "components/TreeView/type";
 
-export function displayContextMenu(e, args) {
-  e.preventDefault(); // Prevent default browser context menu
+
+
+type Args = {
+  d: IonClickNode["d"];
+  actionRef: IonClickNode["actionRef"];
+  root: IonClickNode["root"];
+  group: IonClickNode["group"];
+}
+
+export function displayContextMenu(e: any, args: Args) {
+  e.preventDefault(); // Prevents default browser context menu
 
   const contextMenu = select("#context-menu");
 
@@ -15,7 +25,7 @@ export function displayContextMenu(e, args) {
 
   const body = select("body");
 
-  const { d, labelWidth, root, group } = args;
+  const { d, root, group } = args;
 
   contextMenu
     .select("#skip")
@@ -30,7 +40,6 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
         checkChildren: true,
@@ -51,10 +60,9 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
-        checkChildren: d.children,
+        checkChildren: d.children ? true : false,
       });
 
       const ancestors = d.ancestors();
@@ -63,12 +71,13 @@ export function displayContextMenu(e, args) {
         const parent = d;
         const parentLeaves = parent.leaves();
         const parentLeavesLengthInvertedValues = parentLeaves.filter(
-          (d) => d.inverted
+          (d: INode) => d.inverted
         );
 
         if (parentLeaves.length === parentLeavesLengthInvertedValues.length) {
           menuActionRef = {
             current: {
+              // @ts-ignore
               ...menuActionRef.current.skip,
               invert: true,
             },
@@ -76,6 +85,7 @@ export function displayContextMenu(e, args) {
         } else {
           menuActionRef = {
             current: {
+              // @ts-ignore
               ...menuActionRef.current.skip,
               invert: false,
             },
@@ -85,7 +95,6 @@ export function displayContextMenu(e, args) {
         onClickNode({
           d: parent,
           actionRef: menuActionRef,
-          labelWidth,
           root,
           group,
           checkChildren: false,
@@ -108,10 +117,11 @@ export function displayContextMenu(e, args) {
 
   fontStyleLabel.style(
     "font-weight",
-    d.fontBold || d.italic ? "bold" : "normal"
+    d.fontBold || d.fontItalic ? "bold" : "normal"
   );
   fontStyleBoldButton
-    .style("font-weight", d.bold ? "bold" : "normal")
+    .style("font-weight", d.fontBold ? "bold" : "normal")
+    .style("background-color", d.fontBold ? "#99ccff" : "#fff")
     .on("click", function (e) {
       const menuActionRef = {
         current: {
@@ -123,7 +133,6 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
         checkChildren: false,
@@ -132,6 +141,9 @@ export function displayContextMenu(e, args) {
 
   fontStyleItalicButton
     .style("font-weight", d.fontItalic ? "bold" : "normal")
+    .style("font-style", "italic")
+    .style("background-color", d.fontItalic ? "#99ccff" : "#fff")
+
     .on("click", function (e) {
       const menuActionRef = {
         current: {
@@ -143,7 +155,6 @@ export function displayContextMenu(e, args) {
       onClickNode({
         d,
         actionRef: menuActionRef,
-        labelWidth,
         root,
         group,
         checkChildren: false,
@@ -168,7 +179,6 @@ export function displayContextMenu(e, args) {
     onClickNode({
       d,
       actionRef: menuActionRef,
-      labelWidth,
       root,
       group,
       checkChildren: false,
@@ -191,7 +201,6 @@ export function displayContextMenu(e, args) {
     onClickNode({
       d,
       actionRef: menuActionRef,
-      labelWidth,
       root,
       group,
       checkChildren: false,
