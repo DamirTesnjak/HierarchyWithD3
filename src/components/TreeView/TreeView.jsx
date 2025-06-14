@@ -79,7 +79,7 @@ export function TreeView() {
         d.skipped = false; // tag if value is skipped
         d.dirty = false; // tag if value in node or leave is changed
         d.fontSize = "13px";
-        d.fontBold = false;
+        d.fontBold = d.children;
         d.fontItalic = false;
         d.fontColor = "#000";
       })(0)
@@ -103,7 +103,14 @@ export function TreeView() {
       .attr("transform", (d) => `translate(0,${d.index * nodeSize})`)
       .style("cursor", "pointer")
       .on("click", function (e, d) {
-        onClickNode({ d, actionRef, labelWidth, root, group: svg });
+        onClickNode({
+          d,
+          actionRef,
+          labelWidth,
+          root,
+          group: svg,
+          checkChildren: d.children,
+        });
       })
       .on("contextmenu", function (e, d) {
         displayContextMenu(e, { d, actionRef, labelWidth, root, group: svg });

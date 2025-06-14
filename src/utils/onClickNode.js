@@ -4,15 +4,24 @@ import { fontColor } from "./fontColor";
 import { valueTextPosition } from "./valueTextPosition";
 import { getSumValueOfNode } from "./getSumValueOfNode";
 
-export function onClickNode({ d, actionRef, labelWidth, root, group }) {
+export function onClickNode({
+  d,
+  actionRef,
+  labelWidth,
+  root,
+  group,
+  checkChildren,
+}) {
   d.skip = actionRef.current.skip;
   d.skipped = actionRef.current.skipped;
   d.invert = actionRef.current.invert;
   d.inverted = actionRef.current.inverted;
 
+  const leaves = d.leaves();
+
   if (d.skip && !d.invert) {
-    if (d.children) {
-      d.leaves().forEach((c) =>
+    if (d.children && checkChildren) {
+      leaves.forEach((c) =>
         setChildNodesValues({
           child: c,
           storeValue: 0,
@@ -30,7 +39,7 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
   }
 
   if (d.invert && !d.skip) {
-    if (d.children) {
+    if (d.children && checkChildren) {
       d.leaves().forEach((c) =>
         setChildNodesValues({
           child: c,
@@ -49,7 +58,7 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
   }
 
   if (!d.invert && !d.skip) {
-    if (d.children) {
+    if (d.children && checkChildren) {
       d.leaves().forEach((c) =>
         setChildNodesValues({
           child: c,
@@ -88,9 +97,7 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
         .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
         .attr("fill", (d) => fontColor(d))
         .attr("font-size", (d) => d.fontSize)
-        .attr("font-weight", (d) =>
-          d.fontBold || d.children ? "bold" : "normal"
-        )
+        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
         .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
         .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
 
@@ -98,9 +105,7 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
         .attr("x", (d) => valueTextPosition(d, labelWidth))
         .attr("fill", (d) => fontColor(d))
         .attr("font-size", (d) => d.fontSize)
-        .attr("font-weight", (d) =>
-          d.fontBold || d.children ? "bold" : "normal"
-        )
+        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
         .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
         .text((d) => {
           return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);

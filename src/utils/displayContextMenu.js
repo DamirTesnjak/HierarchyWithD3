@@ -27,7 +27,14 @@ export function displayContextMenu(e, args) {
           skip: d.skipped ? false : true,
         },
       };
-      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
+      onClickNode({
+        d,
+        actionRef: menuActionRef,
+        labelWidth,
+        root,
+        group,
+        checkChildren: false,
+      });
     });
 
   contextMenu
@@ -40,7 +47,45 @@ export function displayContextMenu(e, args) {
           skip: false,
         },
       };
-      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
+
+      onClickNode({
+        d,
+        actionRef: menuActionRef,
+        labelWidth,
+        root,
+        group,
+        checkChildren: d.children,
+      });
+
+      const ancestors = d.ancestors();
+      const parent = ancestors[1] ? ancestors[1] : d;
+      const parentLeaves = parent.leaves();
+      const parentLeavesLengthInvertedValues = parentLeaves.filter(
+        (d) => d.inverted
+      );
+
+      console.log("parentLeaves", parentLeaves.length);
+      console.log(
+        "parentLeavesLengthInvertedValues",
+        parentLeavesLengthInvertedValues.length
+      );
+
+      if (parentLeaves.length === parentLeavesLengthInvertedValues.length) {
+        console.log("test");
+        parent.inverted = true;
+      } else {
+        parent.inverted = false;
+      }
+      onClickNode({
+        d: parent,
+        actionRef: menuActionRef,
+        labelWidth,
+        root,
+        group,
+        checkChildren: false,
+      });
+
+      console.log("p2", parent);
     });
 
   const fontStyle = contextMenu.select("#fontStyle");
@@ -70,7 +115,14 @@ export function displayContextMenu(e, args) {
         },
       };
       d.fontBold = !d.fontBold;
-      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
+      onClickNode({
+        d,
+        actionRef: menuActionRef,
+        labelWidth,
+        root,
+        group,
+        checkChildren: false,
+      });
     });
 
   fontStyleItalicButton
@@ -83,7 +135,14 @@ export function displayContextMenu(e, args) {
         },
       };
       d.fontItalic = !d.fontItalic;
-      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
+      onClickNode({
+        d,
+        actionRef: menuActionRef,
+        labelWidth,
+        root,
+        group,
+        checkChildren: false,
+      });
     });
 
   fontColorLabel.style("font-weight", d.color ? "bold" : "normal");
@@ -101,7 +160,14 @@ export function displayContextMenu(e, args) {
       },
     };
     d.fontColor = selectedFontColor;
-    onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
+    onClickNode({
+      d,
+      actionRef: menuActionRef,
+      labelWidth,
+      root,
+      group,
+      checkChildren: false,
+    });
   });
 
   fontSizeInput.on("click", function (e) {
@@ -117,7 +183,14 @@ export function displayContextMenu(e, args) {
       },
     };
     d.fontSize = `${selectedFontSize}px`;
-    onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
+    onClickNode({
+      d,
+      actionRef: menuActionRef,
+      labelWidth,
+      root,
+      group,
+      checkChildren: false,
+    });
   });
 
   body.on("click", () => contextMenu.style("display", "none"));
