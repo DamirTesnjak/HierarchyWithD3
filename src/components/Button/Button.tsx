@@ -1,6 +1,6 @@
 import "./button.css";
 
-export default function Button(props) {
+export default function Button(props: IButton) {
   const { text, type, skip, invert, onClick } = props;
 
   return (

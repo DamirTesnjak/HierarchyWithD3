@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Button from "./Button/Button";
+import Button from "../Button/Button";
 
-export default function Toolbar(props) {
+export default function Toolbar(props: IToolbar) {
   const { toolbarProps } = props;
   const [actionsTriggered, setActionsTriggered] = useState({
     skip: false,

@@ -8,9 +8,10 @@ import { fontColor } from "../../utils/fontColor";
 import { onClickNode } from "../../utils/onClickNode";
 import { displayContextMenu } from "../../utils/displayContextMenu";
 
-import Toolbar from "../Toolbar";
+import Toolbar from "../Toolbar/Toolbar";
 import jsonData from "../../data/random_nested_tree_10000_leaves";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
+import { Inode } from "./type";
 
 export function TreeView() {
   const data = useMemo(
@@ -73,7 +74,6 @@ export function TreeView() {
       // starting with the 0
       ((i) => (d) => {
         d.index = i++;
-        d.collapsed = false;
         d.store = d.data.value; // store the values for leaves
         d.inverted = false; // tag if value is inverted
         d.skipped = false; // tag if value is skipped
@@ -179,10 +179,10 @@ export function TreeView() {
     invert: {
       buttonType: "button",
       action: () =>
-        (actionRef.current = {
-          skip: false,
-          invert: !actionRef.current.invert,
-        }),
+      (actionRef.current = {
+        skip: false,
+        invert: !actionRef.current.invert,
+      }),
     },
   };
 
