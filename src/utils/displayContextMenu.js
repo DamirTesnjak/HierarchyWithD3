@@ -133,6 +133,7 @@ export function displayContextMenu(e, args) {
 
   fontStyleItalicButton
     .style("font-weight", d.fontItalic ? "bold" : "normal")
+    .style("font-style", "italic")
     .style("background-color", d.fontItalic ? "#99ccff" : "#fff")
 
     .on("click", function (e) {

@@ -41,7 +41,7 @@ export function ContextMenu() {
         <form>
           <label htmlFor="ifontSize">Font size (px)</label>
           <input
-            style={{ width: 30 }}
+            style={{ width: 50 }}
             type="text"
             id="ifontSize"
             name="ifontSize"
