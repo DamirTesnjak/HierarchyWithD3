@@ -87,19 +87,17 @@ export function onClickNode({ d, actionRef, labelWidth, root, group }) {
       label
         .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
         .attr("fill", (d) => fontColor(d))
-        .style("font-size", (d) => d.fontSize)
-        .style("color", (d) => d.fontColor)
-        .style("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
-        .style("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
+        .attr("font-size", (d) => d.fontSize)
+        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
+        .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
         .text((d) => (d.inverted ? `-${d.data.name}` : d.data.name));
 
       value
         .attr("x", (d) => valueTextPosition(d, labelWidth))
         .attr("fill", (d) => fontColor(d))
-        .style("font-size", (d) => d.fontSize)
-        .style("color", (d) => d.fontColor)
-        .style("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
-        .style("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
+        .attr("font-size", (d) => d.fontSize)
+        .attr("font-weight", (d) => (d.fontBold ? "bold" : "normal"))
+        .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
         .text((d) => {
           return getSumValueOfNode(d, actionRef.current.invert).toFixed(2);
         });

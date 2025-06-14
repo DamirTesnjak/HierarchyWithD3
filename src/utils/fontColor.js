@@ -1,9 +1,9 @@
 export function fontColor(d) {
   if (d.children) {
-    return "black";
+    return d.fontColor ? d.fontColor : "black";
   }
   if (d.store < 0) {
     return "red";
   }
-  return "grey";
+  return d.fontColor ? d.fontColor : "grey";
 }

@@ -78,8 +78,9 @@ export function TreeView() {
         d.inverted = false; // tag if value is inverted
         d.skipped = false; // tag if value is skipped
         d.dirty = false; // tag if value in node or leave is changed
+        d.fontSize = "13px";
         d.fontBold = false;
-        d.fontItalic = 13;
+        d.fontItalic = false;
         d.fontColor = "#000";
       })(0)
     );
@@ -93,10 +94,7 @@ export function TreeView() {
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-10, -15, width, height])
-      .attr(
-        "style",
-        "max-width: 100%; height: auto; font-size: 13px; font-family: Roboto"
-      );
+      .attr("style", "max-width: 100%; height: auto; font-family: Roboto");
 
     const node = svg
       .selectAll("g")
@@ -108,7 +106,7 @@ export function TreeView() {
         onClickNode({ d, actionRef, labelWidth, root, group: svg });
       })
       .on("contextmenu", function (e, d) {
-        displayContextMenu(e, { d, labelWidth, root, group: svg });
+        displayContextMenu(e, { d, actionRef, labelWidth, root, group: svg });
       });
 
     node
@@ -123,6 +121,8 @@ export function TreeView() {
       .attr("x", (d) => 10 * (d.depth > 0 ? d.depth : 1))
       .attr("fill", (d) => fontColor(d))
       .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
+      .attr("font-size", (d) => d.fontSize)
+      .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
       .text((d) => d.data.name);
 
     node // display value
@@ -132,6 +132,8 @@ export function TreeView() {
       .attr("x", (d) => valueTextPosition(d, labelWidth))
       .attr("fill", (d) => fontColor(d))
       .attr("font-weight", (d) => (d.children ? "bold" : "normal"))
+      .attr("font-size", (d) => d.fontSize)
+      .attr("font-style", (d) => (d.fontItalic ? "italic" : "normal"))
       .text((d) => getSumValueOfNode(d).toFixed(2));
 
     const bbox = node.node().getBBox();

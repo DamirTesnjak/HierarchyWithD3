@@ -63,13 +63,27 @@ export function displayContextMenu(e, args) {
   fontStyleBoldButton
     .style("font-weight", d.bold ? "bold" : "normal")
     .on("click", function (e) {
+      const menuActionRef = {
+        current: {
+          invert: d.inverted,
+          skip: d.skipped,
+        },
+      };
       d.fontBold = !d.fontBold;
+      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
     });
 
   fontStyleItalicButton
     .style("font-weight", d.fontItalic ? "bold" : "normal")
     .on("click", function (e) {
+      const menuActionRef = {
+        current: {
+          invert: d.inverted,
+          skip: d.skipped,
+        },
+      };
       d.fontItalic = !d.fontItalic;
+      onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
     });
 
   fontColorLabel.style("font-weight", d.color ? "bold" : "normal");
@@ -80,7 +94,14 @@ export function displayContextMenu(e, args) {
 
   fontColorApplyButton.on("click", function (e) {
     const selectedFontColor = fontColorButton.property("value");
+    const menuActionRef = {
+      current: {
+        invert: d.inverted,
+        skip: d.skipped,
+      },
+    };
     d.fontColor = selectedFontColor;
+    onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
   });
 
   fontSizeInput.on("click", function (e) {
@@ -89,7 +110,15 @@ export function displayContextMenu(e, args) {
 
   fontSizeApplyButton.on("click", function (e) {
     const selectedFontSize = fontSizeInput.property("value");
-    d.fontSize = selectedFontSize;
+    console.log("selectedFontSize", selectedFontSize);
+    const menuActionRef = {
+      current: {
+        invert: d.inverted,
+        skip: d.skipped,
+      },
+    };
+    d.fontSize = `${selectedFontSize}px`;
+    onClickNode({ d, actionRef: menuActionRef, labelWidth, root, group });
   });
 
   body.on("click", () => contextMenu.style("display", "none"));
