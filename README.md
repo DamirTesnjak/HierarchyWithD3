@@ -98,7 +98,7 @@ From the context menu, for each row you can:
 
 - Inverting a value will change the font color to red. After that, it won't be possible to change the color, since negative values must stand out (my own artistic license 😄). Otherwise, custom coloring will be displayed.
 
-- If all subset values of a parent are inverted, the parent value will automatically be inverted and its color changed to red.
+- If all subset values of a parent are inverted from the context menu, the parent value will automatically be inverted and its color changed to red.
 
 - Changing the display (invert, skip) from the context menu may take longer, since the code must check parent values and update them if necessary. The processing time depends on how deeply nested the affected data is. "For approximately 13,000 records, processing can take 3–4 seconds if all records are being processed and the action is triggered from the main parent."
 
